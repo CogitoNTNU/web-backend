@@ -22,13 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-rwadhz7=p5)$!m*h)tl8q$v7atu_rf=7-=gh1@!y@x30@de#!-'
-SECURE_SSL_REDIRECT = False
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = [
     "16.171.144.138",
+    "http://cogitobackend-534678456.eu-north-1.elb.amazonaws.com/",
     "127.0.0.1",
     "localhost"
 ]
