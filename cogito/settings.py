@@ -28,7 +28,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "16.171.144.138",
-    "http://cogitobackend-534678456.eu-north-1.elb.amazonaws.com/",
+    "cogitobackend-534678456.eu-north-1.elb.amazonaws.com",
     "127.0.0.1",
     "localhost"
 ]
