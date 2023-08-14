@@ -5,5 +5,6 @@ urlpatterns = [
     path('lead_members/', get_lead_members, name="Lead_members_getter"),
     path('web_members/', get_web_members, name="Web_members_getter"),
     path('hr_members/', get_HR_members, name="HR_members_getter"),
+    path('healthcheck/', get_Healthcheck),
 ]
 

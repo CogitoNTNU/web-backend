@@ -61,3 +61,12 @@ def get_HR_members(request):
     except Exception as e:
         print(e)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def get_Healthcheck(request):
+    '''
+    Returns a healthcheck
+    '''
+    return Response(status=status.HTTP_200_OK)
+        
