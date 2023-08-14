@@ -35,11 +35,7 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://www.cogito-backend.net",
-    "https://cogito-backend.net",
-    "https://cogito-project.vercel.app/",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "https://www.cogito-ntnu.no"
 ]
 
 # Application definition
@@ -56,8 +52,7 @@ INSTALLED_APPS = [
     'projects',
     'members'
 ]
-
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -68,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'cogito.urls'
