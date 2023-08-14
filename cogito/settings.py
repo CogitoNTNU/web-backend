@@ -28,8 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "16.171.144.138",
     "16.171.88.123",
+    "www.cogito-backend.net",
     "cogito-backend.net",
-    "backendserverloadbalancer-535181391.eu-north-1.elb.amazonaws.com",
     "127.0.0.1",
     "localhost"
 ]
