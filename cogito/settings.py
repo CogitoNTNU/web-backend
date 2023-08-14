@@ -16,7 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -24,10 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rwadhz7=p5)$!m*h)tl8q$v7atu_rf=7-=gh1@!y@x30@de#!-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     "16.171.144.138",
+    "16.171.88.123",
+    "cogito-backend.net",
     "cogitobackend-534678456.eu-north-1.elb.amazonaws.com",
     "127.0.0.1",
     "localhost"
