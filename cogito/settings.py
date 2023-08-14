@@ -37,8 +37,9 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "https://www.cogito-backend.net",
     "https://cogito-backend.net",
+    "https://cogito-project.vercel.app/",
     "http://localhost:8000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
 ]
 
 # Application definition
