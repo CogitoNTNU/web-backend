@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'projects',
     'members'
 ]
-CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_ALLOW_ALL = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
