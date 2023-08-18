@@ -1,4 +1,5 @@
-Cogito Django Backend for [Cogito NTNU](https://cogito-ntnu.no).
+# Cogito-Website Backend
+Backend for [Cogito-NTNU](https://cogito-ntnu.no)
 
 ---
 The backend is running on an aws ec2 server. To actually update the backend you need access to it.
