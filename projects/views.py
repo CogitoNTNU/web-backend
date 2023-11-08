@@ -9,6 +9,18 @@ from rest_framework import status
 from .models import newProject
 from .serializers import NewProjectSerializer
 
+import sys
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Assuming `src` is in the `marketing_ai` directory and `views.py` is in the `projects` directory
+marketing_ai_path = Path(__file__).resolve().parent / 'marketing_ai'
+sys.path.append(str(marketing_ai_path))
+
+from projects.marketing_ai.main import generate_image_from_prompt
+env_path = Path(__file__).resolve().parent / 'marketing_ai' / '.env'
+load_dotenv(dotenv_path=env_path)
+
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
 def get_all_new_projects(request):
