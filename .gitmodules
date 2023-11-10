@@ -1,0 +1,3 @@
+[submodule "projects/apps/MarketingAI"]
+	path = projects/apps/MarketingAI
+	url = https://github.com/CogitoNTNU/MarketingAI.git
