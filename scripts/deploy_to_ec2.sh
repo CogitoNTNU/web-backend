@@ -2,7 +2,7 @@
 # deploy_to_ec2.sh
 
 # Navigate to your Django project directory
-cd /path/to/your/django/project
+cd Backend/Cogito-Backend
 
 # Pull the latest code
 git pull origin main
