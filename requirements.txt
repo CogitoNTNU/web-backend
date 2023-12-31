@@ -79,7 +79,7 @@ pycodestyle==2.9.1
 pycparser==2.21
 pydantic==1.10.11
 pyflakes==2.5.0
-PyJWT==2.7.0
+PyJWT==2.8.0
 pyOpenSSL==23.2.0
 PySocks==1.7.1
 python-dateutil==2.8.2
