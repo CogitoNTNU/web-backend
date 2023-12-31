@@ -70,7 +70,7 @@ packaging==23.1
 parsel==1.8.1
 Pillow==10.0.0
 postgres==3.0.0
-prompt-toolkit==3.0.39
+prompt-toolkit==3.0.43
 psycopg2-binary==2.9.6
 psycopg2-pool==1.1
 pyasn1==0.5.0
