@@ -9,6 +9,8 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
+      # Must not be the same as the docker host port
+      # <Port exposed> : <Port to redirect to>
       - '5555:5432'
 volumes:
   postgres:
