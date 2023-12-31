@@ -63,7 +63,7 @@ multidict==6.0.4
 mypy-extensions==1.0.0
 numexpr==2.8.4
 numpy==1.25.1
-openai==0.27.8
+openai==1.6.1
 openapi-schema-pydantic==1.2.4
 outcome==1.2.0
 packaging==23.1
