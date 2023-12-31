@@ -68,7 +68,7 @@ openapi-schema-pydantic==1.2.4
 outcome==1.2.0
 packaging==23.1
 parsel==1.8.1
-Pillow==10.0.0
+Pillow==10.1.0
 postgres==3.0.0
 prompt-toolkit==3.0.39
 psycopg2-binary==2.9.6
