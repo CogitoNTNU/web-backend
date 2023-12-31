@@ -2,7 +2,7 @@
 
 # How to create the SSH key pair
 
-## Create the key pair
+## Create the key pair [Read more](https://linux.how2shout.com/add-a-new-key-pair-to-your-exisitng-aws-ec2-instances/)
 Go into key pairs in the EC2 dashboard and create a new key pair. Download the .pem file and save it in the root of the project.
 
 ![KeyPairs GUI](aws-ec2-key-pairs.png)
@@ -28,7 +28,7 @@ Now we need to add the public key into the EC2 instance, which we got running on
 Now we need to reboot the EC2 Instance:
 ![reboot GUI](reboot-ec2.png)
 
-## Connect to the EC2 instance
+## Connect to the EC2 instance remotely [Read more](https://www.how2shout.com/linux/how-to-ssh-aws-ec2-linux-instances-remotely/)
 We now need the private key to connect, so write this in your terminal
 ```bash
 chmod 400 /path_to_downloaded_key-pair.pem
