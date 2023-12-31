@@ -49,7 +49,7 @@ incremental==22.10.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
 jmespath==1.0.1
-kombu==5.3.1
+kombu==5.3.4
 langchain==0.0.225
 langchainplus-sdk==0.0.20
 loguru==0.7.0
