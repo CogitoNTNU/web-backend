@@ -26,7 +26,7 @@ constantly==15.1.0
 cryptography==41.0.2
 cssselect==1.2.0
 daphne==3.0.2
-dataclasses-json==0.5.9
+dataclasses-json==0.6.3
 dj-database-url==0.5.0
 Django==3.2.7
 django-cors-headers==3.11.0
