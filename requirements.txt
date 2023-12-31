@@ -28,7 +28,7 @@ cssselect==1.2.0
 daphne==3.0.2
 dataclasses-json==0.5.9
 dj-database-url==0.5.0
-Django==3.2.7
+Django==5.0
 django-cors-headers==3.11.0
 django-ipware==5.0.0
 django-sslserver==0.22
