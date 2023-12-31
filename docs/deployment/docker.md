@@ -29,3 +29,8 @@ To stop your Docker containers, you can use:
 ```bash
 docker-compose down
 ```
+
+To view the status of your Docker containers, you can use:
+```bash
+docker ps
+```
