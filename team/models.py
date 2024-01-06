@@ -24,12 +24,13 @@ class Member(models.Model):
 
 
 class MemberApplication(models.Model):
-    first_name = models.CharField(max_length=100, help_text="")
-    last_name = models.CharField(max_length=100, help_text="")
-    email = models.EmailField(help_text="")
-    phone_number = models.CharField(max_length=15)
+    first_name = models.CharField(max_length=100, help_text="Applicant's first name")
+    last_name = models.CharField(max_length=100, help_text="Applicant's last name")
+    email = models.EmailField(help_text="Applicant's email address")
+    phone_number = models.CharField(max_length=15, help_text="Applicant's phone number")
     date_of_application = models.DateTimeField(
-        auto_now=True, help_text="The day the application was sent"
+        auto_now_add=True,  # Use auto_now_add for the creation timestamp
+        help_text="The date and time the application was sent",
     )
 
     def __str__(self):
