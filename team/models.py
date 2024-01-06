@@ -11,10 +11,8 @@ class Member(models.Model):
     category = models.CharField("Category", max_length=30, blank=True, default="")
     email = models.EmailField("Email", max_length=50, blank=True, default="")
 
-    github = models.URLField(
-        'GitHub', max_length=200, blank=True, default='')
-    linkedIn = models.URLField(
-        'LinkedIn', max_length=200, blank=True, default='')
+    github = models.URLField("GitHub", max_length=200, blank=True, default="")
+    linkedIn = models.URLField("LinkedIn", max_length=200, blank=True, default="")
 
     def __str__(self) -> str:
         return self.name
