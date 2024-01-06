@@ -1,0 +1,36 @@
+from django.db import models
+
+# Create your models here.
+
+
+class Member(models.Model):
+    order = models.IntegerField(
+        'Order', primary_key=True, blank=True, default=0)
+    name = models.CharField('Name', max_length=30, blank=True, default='')
+    title = models.CharField('Title', max_length=30, blank=True, default='')
+    image = models.ImageField(
+        'Image', null=True, blank=True, upload_to="images/")
+    category = models.CharField(
+        'Category', max_length=30, blank=True, default='')
+    email = models.EmailField('Email', max_length=50, blank=True, default='')
+
+    github = models.URLField(
+        'GitHub', max_length=200, blank=True, default='')
+    linkedIn = models.URLField(
+        'LinkedIn', max_length=200, blank=True, default='')
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class MemberApplication(models.Model):
+    first_name = models.CharField(max_length=100, help_text="")
+    last_name = models.CharField(max_length=100, help_text="")
+    email = models.EmailField(help_text="")
+    phone_number = models.CharField(max_length=15)
+    date_of_application = models.DateTimeField(
+        auto_now=True, help_text="The day the application was sent"
+    )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
