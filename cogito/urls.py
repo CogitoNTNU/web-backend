@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from .views import index
 
 """
-URL configuration for tutorai project.
+URL configuration for cogito project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -28,9 +28,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="TutorAI API",
-        default_version="v1",
-        description="Your API description",
+        title="Cogito API",
+        default_version="v1.0.0",
+        description="The official API for Cogito NTNU",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
