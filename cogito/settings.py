@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # Applications
-    'team'
+    "team",
+    "api",
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 
