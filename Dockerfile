@@ -1,24 +1,18 @@
 # Use the official Python image from the Docker Hub
-FROM python:3.9
+FROM python:3.11.2
 
-# Set environment variables
-# Prevents Python from writing pyc files to disc (equivalent to python -B option)
-ENV PYTHONDONTWRITEBYTECODE 1
-# Prevents Python from buffering stdout and stderr (equivalent to python -u option)
-ENV PYTHONUNBUFFERED 1
+# Make a new directory to put our code in.
+RUN mkdir /code
 
-# Set work directory
+# Change the working directory.
 WORKDIR /code
 
-# Install dependencies
+# Copy only the requirements first
 COPY requirements.txt /code/
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Copy project
+# Then copy the rest of the code
 COPY . /code/
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
+# Run the application:
+CMD gunicorn --bind :8000 cogito.wsgi --workers 1 --timeout 120

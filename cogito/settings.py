@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'projects',
     'members'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -91,8 +90,13 @@ WSGI_APPLICATION = 'cogito.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DATABASE_NAME", "cogitodb"),
+        "USER": os.getenv("DATABASE_USER", "cogitouser"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD", "cogitopassword"),
+        "HOST": os.getenv("DATABASE_HOST", "db"),
+        "PORT": os.getenv("DATABASE_PORT", "5432"),
+        "OPTIONS": {"sslmode": "prefer"},
     }
 }
 

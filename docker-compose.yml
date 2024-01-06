@@ -1,16 +1,33 @@
 version: '3.8'
+
 services:
-  postgres:
-    image: postgres:13
-    restart: always
-    environment:
-      - POSTGRES_USER=db_cogito
-      - POSTGRES_PASSWORD=db_cogito_password
+  cogito:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - .:/code
     ports:
-      # Must not be the same as the docker host port
-      # <Port exposed> : <Port to redirect to>
-      - '5555:5555'
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=cogitodb
+      - DATABASE_USER=cogitouser
+      - DATABASE_PASSWORD=cogitopassword
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=cogitodb
+      - POSTGRES_USER=cogitouser
+      - POSTGRES_PASSWORD=cogitopassword
+
 volumes:
-  postgres:
+  postgres_data:
