@@ -91,6 +91,22 @@ def apply(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Get applications
+application_success_response = openapi.Response(
+    description="Get all applications",
+    examples={
+        "application/json": [
+            {
+                "first_name": "FIRST_NAME_OF_APPLICANT",
+                "last_name": "SECOND_NAME_OF_APPLICANT",
+                "email": "user@example.com",
+                "phone_number": "12345678",
+            }
+        ]
+    },
+)
+
+
 @swagger_auto_schema(
     method="GET",
     operation_description="Get all applications",
