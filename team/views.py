@@ -4,9 +4,10 @@ from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
-from .models import Member
+from .models import Member, MemberApplication
 from .serializers import (
     MemberSerializer,
     FindMemberSerializer,
@@ -88,3 +89,18 @@ def apply(request):
         return Response(message, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(
+    method="GET",
+    operation_description="Get all applications",
+    tags=["Member Management"],
+    response_description="Returns all applications",
+)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_applications(request):
+    """Returns all applications"""
+    applications = MemberApplication.objects.all()
+    serializer = MemberApplicationSerializer(applications, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
