@@ -2,6 +2,15 @@ from django.db import models
 
 # Create your models here.
 
+class Project(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to="images/")
+    github = models.URLField(max_length=200, blank=True, default="")
+    website = models.URLField(max_length=200, blank=True, default="")
+
+    def __str__(self) -> str:
+        return self.name
 
 class Member(models.Model):
     order = models.IntegerField("Order", primary_key=True, blank=True, default=0)
