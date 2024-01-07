@@ -70,3 +70,14 @@ class MemberTestCase(TestCase):
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 400)
+
+    def test_international_phone_numbers(self):
+        data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "user@domain.com",
+            "phone_number": "+491234567890",
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 400)
+
