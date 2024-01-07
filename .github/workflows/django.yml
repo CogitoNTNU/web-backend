@@ -2,29 +2,23 @@ name: Django CI
 
 on:
   push:
-    branches: [ "main", "4-implement-automatic-ec2-deployment-on-main-branch-updates" ]
+    branches: ["main", "4-implement-automatic-ec2-deployment-on-main-branch-updates"]
   pull_request:
-    branches: [ "main", "4-implement-automatic-ec2-deployment-on-main-branch-updates" ]
+    branches: ["main", "4-implement-automatic-ec2-deployment-on-main-branch-updates"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ["3.9", "3.10"]
-
+      fail-fast: true
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Run Tests
-      run: |
-        python manage.py test
+      - uses: actions/checkout@v3
+      - name: Build docker image and run tests
+        run: |
+          cd backend
+          docker compose build
+          docker compose run cogito python manage.py makemigrations
+          docker compose run cogito python manage.py migrate
+          docker compose up -d
+          docker compose run cogito python manage.py test
+          docker compose down
