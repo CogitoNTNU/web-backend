@@ -15,7 +15,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build docker image and run tests
         run: |
-          cd backend
           docker compose build
           docker compose run cogito python manage.py makemigrations
           docker compose run cogito python manage.py migrate
