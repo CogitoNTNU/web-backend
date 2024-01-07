@@ -5,4 +5,4 @@ from .models import Member, MemberApplication, Project
 admin.site.register(Member)
 admin.site.register(MemberApplication)
 
-admin.site.register(Project)
+admin.site.register(ProjectDescription)

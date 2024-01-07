@@ -1,8 +1,5 @@
-from .models import MemberApplication, Project
-from django import forms
 from rest_framework import serializers
-from .models import Member, MemberApplication
-import re
+from .models import Member, MemberApplication, ProjectDescription
 
 # Write your serializers here
 
@@ -27,7 +24,7 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
         return MemberApplication.objects.create(**validated_data)
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Project
+        model = ProjectDescription
         fields = "__all__"
