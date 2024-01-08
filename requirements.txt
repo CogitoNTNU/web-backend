@@ -62,7 +62,7 @@ msgpack==1.0.5
 multidict==6.0.4
 mypy-extensions==1.0.0
 numexpr==2.8.4
-numpy==1.25.1
+numpy==1.26.3
 openai==0.27.8
 openapi-schema-pydantic==1.2.4
 outcome==1.2.0
