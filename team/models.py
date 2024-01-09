@@ -2,6 +2,16 @@ from django.db import models
 
 # Create your models here.
 
+class ProjectDescription(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to="images/")
+    leader = models.CharField(max_length=100)
+    hours_a_week = models.IntegerField()
+
+
+    def __str__(self) -> str:
+        return self.name
 
 class Member(models.Model):
     order = models.IntegerField(
