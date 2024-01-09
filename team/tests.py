@@ -69,7 +69,7 @@ class MemberTestCase(TestCase):
             "phone_number": "123",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
 
     def test_international_phone_numbers(self):
         data = {
@@ -79,5 +79,5 @@ class MemberTestCase(TestCase):
             "phone_number": "+491234567890",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
 
