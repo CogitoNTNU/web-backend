@@ -17,7 +17,7 @@ class FindMemberSerializer(serializers.Serializer):
 class MemberApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MemberApplication
-        fields = ["first_name", "last_name", "email", "phone_number"]
+        fields = "__all__"
 
     def create(self, validated_data):
         # Django automatically adds the current date and time for the date_of_application field
