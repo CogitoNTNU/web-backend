@@ -1,6 +1,12 @@
 # Do not commit secrets or credentials to git
 *.pem
 
+# Do not add migrations to git
+**/migrations/*.py
+
+# Keep the __init__.py files, they are needed to make Python treat the directories as containing packages
+!**/migrations/__init__.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
