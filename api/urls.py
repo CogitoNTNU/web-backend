@@ -6,5 +6,5 @@ urlpatterns = [
     path("members_by_type/", get_members, name="Members_getter"),
     path("apply/", apply, name="Apply"),
     path("applications/", get_applications, name="Applications"),
-    path("health_check/", health_check, name="Health_check"),
+    path("health-check/", health_check, name="Health_check"),
 ]
