@@ -75,7 +75,8 @@ application_error_response = openapi.Response(
     operation_description="Sends in an application to Cogito",
     tags=["Member Management"],
     response_description="Returns a message confirming that the application has been registered.",
-    responses={200: application_success_response, 400: application_error_response},
+    responses={200: application_success_response,
+               400: application_error_response},
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -100,6 +101,7 @@ application_success_response = openapi.Response(
                 "first_name": "FIRST_NAME_OF_APPLICANT",
                 "last_name": "SECOND_NAME_OF_APPLICANT",
                 "email": "user@example.com",
+                "about": "My name is FIRST_NAME and my last name is SECOND_NAME",
                 "phone_number": "12345678",
             }
         ]
