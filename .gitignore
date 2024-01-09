@@ -1,6 +1,9 @@
 # Do not commit secrets or credentials to git
 *.pem
 
+# Do not add migrations to git
+**/migrations/*.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
