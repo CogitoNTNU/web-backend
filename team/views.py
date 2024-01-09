@@ -149,7 +149,7 @@ project_success_response = openapi.Response(
     response={200: project_success_response},
 )
 @api_view(["GET"])
-def get_projects(request):
+def get_projects_descriptions(request):
     """Returns all projects"""
     projects = ProjectDescription.objects.all()
     serializer = ProjectDescriptionSerializer(projects, many=True)
@@ -170,19 +170,19 @@ project_error_response = openapi.Response(
 )
 @swagger_auto_schema(
     method="POST",
-    operation_description="Add a project",
+    operation_description="Add a project description",
     tags=["Project Management"],
     response_description="Returns a message confirming that the project has been added.",
     responses={200: project_success_response, 400: project_error_response},
 )
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def add_project(request):
+def add_project_description(request):
     """Add a project"""
     serializer = ProjectDescriptionSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        message = {"message": "Project added successfully"}
+        message = {"message": "Project description added successfully"}
         return Response(message, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

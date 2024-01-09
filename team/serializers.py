@@ -25,6 +25,8 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
 
 
 class ProjectDescriptionSerializer(serializers.ModelSerializer):
+    leaders = MemberSerializer(many=True, read_only=True)
+
     class Meta:
         model = ProjectDescription
         fields = "__all__"
