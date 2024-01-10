@@ -15,6 +15,7 @@ Table of Contents
     - [3. Adding the Public Key to the EC2 Instance](#3-adding-the-public-key-to-the-ec2-instance)
     - [4. Rebooting the EC2 Instance|](#4-rebooting-the-ec2-instance)
     - [5. Connect to the EC2 instance remotely Read more](#5-connect-to-the-ec2-instance-remotely-read-more)
+    - [TMUX](#tmux)
 </details>
 
 ## Prerequisites
