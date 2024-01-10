@@ -22,7 +22,7 @@ on:
 
 
 jobs:
-  example_job:
+  health_status_check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
