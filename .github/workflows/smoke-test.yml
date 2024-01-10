@@ -12,6 +12,8 @@ on:
            # │ │ │ │ │
            # * * * * *
     - cron: '23 * * * *'
+  workflow_dispatch:
+
 
 jobs:
   example_job:
