@@ -26,8 +26,8 @@ class MemberApplication(models.Model):
     email = models.EmailField(help_text="Applicant's email address")
     phone_number = models.CharField(
         max_length=15, help_text="Applicant's phone number")
-    about = models.CharField(
-        max_length=300, blank=True, help_text="Applicant's main application")
+    about = models.TextField(
+        blank=True, help_text="Applicant's main application")
     date_of_application = models.DateTimeField(
         auto_now_add=True,  # Use auto_now_add for the creation timestamp
         help_text="The date and time the application was sent",
