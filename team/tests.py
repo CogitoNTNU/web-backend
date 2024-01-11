@@ -1,8 +1,20 @@
-from django.test import TestCase, client
+from django.test import TestCase, Client
 
 # Create your tests here.
 
 base = "/api/"
+
+
+class GetMembersTestCase(TestCase):
+    def test_get_all_members(self):
+        response = self.client.post(self.url, {"member_type": "Alle Medlemmer"})
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_members_invalid_category(self):
+        response = self.client.post(self.url, {"member_type": "Invalid Category"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode(), "[]")
 
 
 class MemberTestCase(TestCase):
@@ -80,4 +92,3 @@ class MemberTestCase(TestCase):
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
-
