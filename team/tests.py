@@ -198,3 +198,95 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
+
+    def test_valid_norwegian_names(self):
+        payload = self.valid_payload.copy()
+        payload["first_name"] = "ÆØÅ"
+        payload["last_name"] = "æøå"
+
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the amount of applications in the database has increased by 1
+        self.assertEqual(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+    def test_valid_duplicate_applications(self):
+        """
+        Applications with the same fields should be allowed as one might accidentally send in the same application twice,
+        or send in an application with the same information as a previous one.
+        """
+        response1 = self.client.post(self.url, self.valid_payload, format="json")
+        self.assertEqual(response1.status_code, 200)
+
+        response2 = self.client.post(self.url, self.valid_payload, format="json")
+        self.assertEqual(response2.status_code, 200)
+
+        # Check that the applications was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 2,
+        )
+
+    def test_valid_email_with_subdomain(self):
+        payload = self.valid_payload.copy()
+        payload["email"] = "user@mail.example.com"
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+    def test_valid_email_with_dots_in_start(self):
+        payload = self.valid_payload.copy()
+        payload["email"] = "user.lastname@example.com"
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+    def test_valid_long_email_address(self):
+        payload = self.valid_payload.copy()
+        payload["email"] = "a" * 100 + "@example.com"
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+    def test_valid_numeric_email_local_part(self):
+        payload = self.valid_payload.copy()
+        payload["email"] = "1234567890@example.com"
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+    def test_invalid_too_long_names(self):
+        payload = self.valid_payload.copy()
+        payload["first_name"] = "a" * 101
+        payload["last_name"] = "a" * 101
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 400)
+
+        # Check that the application was not created in the database
+        self.assertEqual(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test,
+        )
