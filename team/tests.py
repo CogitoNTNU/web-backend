@@ -132,6 +132,19 @@ class ApplyTestCase(TestCase):
             self.amount_of_applications_before_test,
         )
 
+    def test_invalid_too_long_names(self):
+        payload = self.valid_payload.copy()
+        payload["first_name"] = "a" * 101
+        payload["last_name"] = "a" * 101
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, 400)
+
+        # Check that the application was not created in the database
+        self.assertEqual(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test,
+        )
+
     def test_apply_successful(self):
         response = self.client.post(self.url, self.valid_payload, format="json")
         self.assertEqual(response.status_code, 200)
@@ -276,17 +289,4 @@ class ApplyTestCase(TestCase):
         self.assertTrue(
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
-        )
-
-    def test_invalid_too_long_names(self):
-        payload = self.valid_payload.copy()
-        payload["first_name"] = "a" * 101
-        payload["last_name"] = "a" * 101
-        response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 400)
-
-        # Check that the application was not created in the database
-        self.assertEqual(
-            MemberApplication.objects.count(),
-            self.amount_of_applications_before_test,
         )
