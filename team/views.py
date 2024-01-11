@@ -12,7 +12,7 @@ from .serializers import (
     MemberSerializer,
     FindMemberSerializer,
     MemberApplicationSerializer,
-    ProjectDescriptionSerializer
+    ProjectDescriptionSerializer,
 )
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -34,9 +34,9 @@ member_error_response = openapi.Response(
 @swagger_auto_schema(
     method="POST",
     request_body=FindMemberSerializer,
-    operation_description="Get members",
+    operation_description="Get members with the specified category, for retrieval of all members set it to 'Alle Medlemmer' ",
     tags=["Member Management"],
-    response_description="",
+    response_description="Returns the members wished upon the request",
     responses={200: member_success_response, 400: member_error_response},
 )
 @api_view(["POST"])
@@ -76,8 +76,7 @@ application_error_response = openapi.Response(
     operation_description="Sends in an application to Cogito",
     tags=["Member Management"],
     response_description="Returns a message confirming that the application has been registered.",
-    responses={200: application_success_response,
-               400: application_error_response},
+    responses={200: application_success_response, 400: application_error_response},
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -141,6 +140,7 @@ project_success_response = openapi.Response(
     },
 )
 
+
 @swagger_auto_schema(
     method="GET",
     operation_description="Get all projects",
@@ -155,6 +155,7 @@ def get_projects_descriptions(request):
     serializer = ProjectDescriptionSerializer(projects, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 # Add Project
 project_success_response = openapi.Response(
     description="Add a project",
@@ -168,6 +169,8 @@ project_error_response = openapi.Response(
     description="The project was not added due to missing fields or invalid data",
     examples={"application/json": {"error": "Missing fields"}},
 )
+
+
 @swagger_auto_schema(
     method="POST",
     operation_description="Add a project description",
