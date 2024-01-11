@@ -290,3 +290,36 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
+
+
+class SQLInjectionTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}apply/"
+
+        self.valid_payload = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "johndoe@example.com",
+            "phone_number": "1234567890",
+            "about": "I am a developer, who loves AI",
+        }
+
+    def test_sql_injection_in_about_field(self):
+        # A harmless SQL injection attempt for testing purposes.
+        # This SQL statement is a no-op (no operation), it should not affect the database.
+        sql_injection_payload = "'; SELECT 1; --"
+
+        self.valid_payload["about"] = sql_injection_payload
+
+        response = self.client.post(self.url, self.valid_payload, format="json")
+
+        # Expecting a normal response since Django ORM should safely handle the input
+        self.assertEqual(response.status_code, 200)
+
+        # Verify that the 'about' field contains the SQL injection code as plain text
+        application = MemberApplication.objects.get(email="johndoe@example.com")
+        self.assertEqual(application.about, sql_injection_payload)
+
+        # Verifying that the database integrity is maintained
+        self.assertTrue(MemberApplication.objects.exists())
