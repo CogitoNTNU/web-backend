@@ -6,6 +6,10 @@ base = "/api/"
 
 
 class GetMembersTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}members_by_type/"
+
     def test_get_all_members(self):
         response = self.client.post(self.url, {"member_type": "Alle Medlemmer"})
         self.assertEqual(response.status_code, 200)
