@@ -134,7 +134,7 @@ class GetProjectsDescriptionsTestCase(TestCase):
         response = self.client.get(self.url)
         data = response.json()
 
-        # Assuming you want to check the details of the first project
+        # Check the details of the first project
         self.assertEqual(data[0]["name"], "Project 1")
         self.assertEqual(data[0]["description"], "Description for Project 1")
         self.assertEqual(data[0]["hours_a_week"], 10)
@@ -145,7 +145,7 @@ class GetProjectsDescriptionsTestCase(TestCase):
         response = self.client.get(self.url)
         data = response.json()
 
-        # Assuming you want to check the details of the first project
+        # Check the details of the Second project
         self.assertEqual(data[1]["name"], "Project 2")
         self.assertEqual(data[1]["description"], "Description for Project 2")
         self.assertEqual(data[1]["hours_a_week"], 20)
