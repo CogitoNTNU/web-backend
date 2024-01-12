@@ -90,10 +90,10 @@ class GetProjectsDescriptionsTestCase(TestCase):
         self.url = f"{base}projects-description/"
         # Create some Member and ProjectDescription objects for testing
         member1 = Member.objects.create(
-            name="John Doe", email="john@example.com", order=1
+            name="Jane Doe", email="jane@example.com", order=2
         )
         member2 = Member.objects.create(
-            name="Jane Doe", email="jane@example.com", order=2
+            name="John Doe", email="john@example.com", order=1
         )
 
         project1 = ProjectDescription.objects.create(
@@ -121,3 +121,10 @@ class GetProjectsDescriptionsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Project 1", response.content.decode())
         self.assertIn("Project 2", response.content.decode())
+
+    def test_get_leader_from_project(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Jane Doe", response.content.decode())
+        self.assertIn("John Doe", response.content.decode())
