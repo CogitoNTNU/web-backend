@@ -90,10 +90,10 @@ class GetProjectsDescriptionsTestCase(TestCase):
         self.url = f"{base}projects-description/"
         # Create some Member and ProjectDescription objects for testing
         member1 = Member.objects.create(
-            name="Jane Doe", email="jane@example.com", order=2
+            name="Jane Doe", email="jane@example.com", order=1
         )
         member2 = Member.objects.create(
-            name="John Doe", email="john@example.com", order=1
+            name="John Doe", email="john@example.com", order=2
         )
 
         project1 = ProjectDescription.objects.create(
@@ -108,6 +108,7 @@ class GetProjectsDescriptionsTestCase(TestCase):
             description="Description for Project 2",
             hours_a_week=20,
         )
+        project2.leaders.add(member1)
         project2.leaders.add(member2)
 
     def tearDown(self) -> None:
@@ -128,3 +129,26 @@ class GetProjectsDescriptionsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Jane Doe", response.content.decode())
         self.assertIn("John Doe", response.content.decode())
+
+    def test_project_details(self):
+        response = self.client.get(self.url)
+        data = response.json()
+
+        # Assuming you want to check the details of the first project
+        self.assertEqual(data[0]["name"], "Project 1")
+        self.assertEqual(data[0]["description"], "Description for Project 1")
+        self.assertEqual(data[0]["hours_a_week"], 10)
+        self.assertEqual(len(data[0]["leaders"]), 1)
+        self.assertEqual(data[0]["leaders"][0]["name"], "Jane Doe")
+
+    def test_project_details_with_several_leaders(self):
+        response = self.client.get(self.url)
+        data = response.json()
+
+        # Assuming you want to check the details of the first project
+        self.assertEqual(data[1]["name"], "Project 2")
+        self.assertEqual(data[1]["description"], "Description for Project 2")
+        self.assertEqual(data[1]["hours_a_week"], 20)
+        self.assertEqual(len(data[1]["leaders"]), 2)
+        self.assertEqual(data[1]["leaders"][0]["name"], "Jane Doe")
+        self.assertEqual(data[1]["leaders"][1]["name"], "John Doe")
