@@ -1,5 +1,7 @@
 from django.test import TestCase, client
 
+from team.models import Member, ProjectDescription
+
 # Create your tests here.
 
 base = "/api/"
