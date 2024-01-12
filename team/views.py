@@ -87,6 +87,7 @@ def apply(request):
     serializer = MemberApplicationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+        # TODO: save in google sheets
         message = {"message": "Application sent in successfully"}
         return Response(message, status=status.HTTP_200_OK)
     else:
