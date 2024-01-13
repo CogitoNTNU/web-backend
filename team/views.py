@@ -185,12 +185,20 @@ def add_project_description(request):
     serializer = ProjectDescriptionSerializer(data=request.data)
     if serializer.is_valid():
         # Check if the leaders are valid members
-        leaders = request.data.get("leaders")
-        for leader_email in leaders:
-            if not Member.objects.filter(email=leader_email).exists():
-                message = {"error": "Invalid leader member, member does not exist"}
+        leader_emails = request.data.get("leaders", [])
+        for email in leader_emails:
+            if not Member.objects.filter(email=email).exists():
+                message = {
+                    "error": f"Invalid leader member, member {email} does not exist"
+                }
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
+
+        project = serializer.save()
+
+        # Associate leaders
+        for email in leader_emails:
+            leader = Member.objects.get(email=email)
+            project.leaders.add(leader)
         message = {"message": "Project description added successfully"}
         return Response(message, status=status.HTTP_200_OK)
     else:
