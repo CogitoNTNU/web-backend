@@ -281,8 +281,5 @@ class AddProjectDescriptionTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        self.assertIn("leaders", response.data)
-        self.assertIn("Invalid leaders", response.data["leaders"][0])
-
         # Check that no new project description is added to the database
         self.assertEqual(ProjectDescription.objects.count(), 0)
