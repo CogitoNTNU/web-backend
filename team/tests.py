@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from team.models import Member, MemberApplication
+from rest_framework import status
 
 # Create your tests here.
 
@@ -28,20 +29,20 @@ class GetMembersTestCase(TestCase):
     def test_get_all_members(self):
         response = self.client.post(self.url, {"member_type": "Alle Medlemmer"})
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Alice", response.content.decode())
 
     def test_get_members_by_category(self):
         response = self.client.post(self.url, {"member_type": "Another Category"})
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Bob", response.content.decode())
         self.assertNotIn("Alice", response.content.decode())
 
     def test_get_members_invalid_category(self):
         response = self.client.post(self.url, {"member_type": "Invalid Category"})
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content.decode(), "[]")
 
 
@@ -64,7 +65,7 @@ class ApplyTestCase(TestCase):
         invalid_payload["email"] = "invalid-email"
 
         response = self.client.post(self.url, invalid_payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("email", response.data)
 
         # Check that the application was not created in the database
@@ -78,7 +79,7 @@ class ApplyTestCase(TestCase):
         invalid_payload["email"] = ""
 
         response = self.client.post(self.url, invalid_payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("email", response.data)
 
         # Check that the application was not created in the database
@@ -92,7 +93,7 @@ class ApplyTestCase(TestCase):
         invalid_payload["first_name"] = ""
 
         response = self.client.post(self.url, invalid_payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Check that the error message contains the field name
         self.assertIn("first_name", response.data)
 
@@ -107,7 +108,7 @@ class ApplyTestCase(TestCase):
         invalid_payload["last_name"] = ""
 
         response = self.client.post(self.url, invalid_payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Check that the error message contains the field name
         self.assertIn("last_name", response.data)
 
@@ -122,7 +123,7 @@ class ApplyTestCase(TestCase):
         invalid_payload["phone_number"] = ""
 
         response = self.client.post(self.url, invalid_payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Check that the error message contains the field name
         self.assertIn("phone_number", response.data)
 
@@ -137,7 +138,7 @@ class ApplyTestCase(TestCase):
         payload["first_name"] = "a" * 101
         payload["last_name"] = "a" * 101
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Check that the application was not created in the database
         self.assertEqual(
@@ -147,7 +148,7 @@ class ApplyTestCase(TestCase):
 
     def test_apply_successful(self):
         response = self.client.post(self.url, self.valid_payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Application sent in successfully", response.data["message"])
 
         # Check that the application was created in the database
@@ -165,7 +166,7 @@ class ApplyTestCase(TestCase):
         payload["phone_number"] = "123"
 
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -178,7 +179,7 @@ class ApplyTestCase(TestCase):
         payload["phone_number"] = "+491234567890"
 
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -191,7 +192,7 @@ class ApplyTestCase(TestCase):
         payload["about"] = "Lorem ipsum" * 1000
 
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -204,7 +205,7 @@ class ApplyTestCase(TestCase):
         payload["about"] = ""
 
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -218,7 +219,7 @@ class ApplyTestCase(TestCase):
         payload["last_name"] = "æøå"
 
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -232,10 +233,10 @@ class ApplyTestCase(TestCase):
         or send in an application with the same information as a previous one.
         """
         response1 = self.client.post(self.url, self.valid_payload, format="json")
-        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(response1.status_code, status.HTTP_200_OK)
 
         response2 = self.client.post(self.url, self.valid_payload, format="json")
-        self.assertEqual(response2.status_code, 200)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
         # Check that the applications was created in the database
         self.assertTrue(
@@ -247,7 +248,7 @@ class ApplyTestCase(TestCase):
         payload = self.valid_payload.copy()
         payload["email"] = "user@mail.example.com"
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the application was created in the database
         self.assertTrue(
@@ -259,7 +260,7 @@ class ApplyTestCase(TestCase):
         payload = self.valid_payload.copy()
         payload["email"] = "user.lastname@example.com"
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the application was created in the database
         self.assertTrue(
@@ -271,7 +272,7 @@ class ApplyTestCase(TestCase):
         payload = self.valid_payload.copy()
         payload["email"] = "a" * 100 + "@example.com"
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the application was created in the database
         self.assertTrue(
@@ -283,7 +284,7 @@ class ApplyTestCase(TestCase):
         payload = self.valid_payload.copy()
         payload["email"] = "1234567890@example.com"
         response = self.client.post(self.url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check that the application was created in the database
         self.assertTrue(
@@ -315,7 +316,7 @@ class SQLInjectionTestCase(TestCase):
         response = self.client.post(self.url, self.valid_payload, format="json")
 
         # Expecting a normal response since Django ORM should safely handle the input
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify that the 'about' field contains the SQL injection code as plain text
         application = MemberApplication.objects.get(email="johndoe@example.com")
