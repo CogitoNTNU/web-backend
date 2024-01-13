@@ -36,7 +36,7 @@ class MemberTestCase(TestCase):
         }
         response = self.client.post(self.url, data)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_missing_first_name_payload(self):
         data = {
@@ -46,7 +46,7 @@ class MemberTestCase(TestCase):
             "phone_number": "1234567890",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_missing_last_name_payload(self):
         data = {
@@ -56,7 +56,7 @@ class MemberTestCase(TestCase):
             "phone_number": "1234567890",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_missing_phone_number_payload(self):
         data = {
@@ -66,7 +66,7 @@ class MemberTestCase(TestCase):
             "phone_number": "",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_to_short_phone_number_payload(self):
         data = {
@@ -76,7 +76,7 @@ class MemberTestCase(TestCase):
             "phone_number": "123",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_international_phone_numbers(self):
         data = {
@@ -86,7 +86,7 @@ class MemberTestCase(TestCase):
             "phone_number": "+491234567890",
         }
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class GetProjectsDescriptionsTestCase(TestCase):
@@ -124,14 +124,14 @@ class GetProjectsDescriptionsTestCase(TestCase):
     def test_get_all_projects(self):
         response = self.client.get(self.url)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Project 1", response.content.decode())
         self.assertIn("Project 2", response.content.decode())
 
     def test_get_leader_from_project(self):
         response = self.client.get(self.url)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Jane Doe", response.content.decode())
         self.assertIn("John Doe", response.content.decode())
 
@@ -229,7 +229,7 @@ class AddProjectDescriptionTestCase(TestCase):
             self.url, self.valid_project_data, format="multipart"
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_status.HTTP_200_OK_OK)
         self.assertEqual(ProjectDescription.objects.count(), 1)
 
     def test_add_project_description_success_with_several_leaders(self):
@@ -239,7 +239,7 @@ class AddProjectDescriptionTestCase(TestCase):
         project_data["leaders"].append(self.member2.email)
 
         response = self.client.post(self.url, project_data, format="multipart")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_status.HTTP_200_OK_OK)
         self.assertEqual(ProjectDescription.objects.count(), 1)
         # Check that the project has three leaders
         project = ProjectDescription.objects.first()
@@ -250,7 +250,9 @@ class AddProjectDescriptionTestCase(TestCase):
             self.url, self.invalid_project_data_missing_name, format="json"
         )
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.status_code, status.HTTP_status.HTTP_400_BAD_REQUEST_BAD_REQUEST
+        )
         self.assertEqual(ProjectDescription.objects.count(), 0)
 
     def test_add_project_invalid_image(self):
@@ -258,7 +260,9 @@ class AddProjectDescriptionTestCase(TestCase):
             self.url, self.invalid_project_data_missing_image, format="json"
         )
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.status_code, status.HTTP_status.HTTP_400_BAD_REQUEST_BAD_REQUEST
+        )
         self.assertEqual(ProjectDescription.objects.count(), 0)
 
     def test_add_project_invalid_data_field_validation(self):
@@ -268,7 +272,9 @@ class AddProjectDescriptionTestCase(TestCase):
 
         response = self.client.post(self.url, invalid_data, format="multipart")
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.status_code, status.HTTP_status.HTTP_400_BAD_REQUEST_BAD_REQUEST
+        )
         self.assertEqual(ProjectDescription.objects.count(), 0)
 
     def test_add_project_description_unauthenticated(self):
@@ -292,7 +298,9 @@ class AddProjectDescriptionTestCase(TestCase):
 
         response = self.client.post(self.url, invalid_leaders_data, format="multipart")
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.status_code, status.HTTP_status.HTTP_400_BAD_REQUEST_BAD_REQUEST
+        )
 
         # Check that no new project description is added to the database
         self.assertEqual(ProjectDescription.objects.count(), 0)
