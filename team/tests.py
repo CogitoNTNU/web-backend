@@ -1,6 +1,11 @@
-from django.test import TestCase, client
-
+from io import BytesIO
+from django.test import TestCase, Client
+from PIL import Image
+from django.contrib.auth.models import User
+from rest_framework.test import APIClient
+from rest_framework import status
 from team.models import Member, ProjectDescription
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 # Create your tests here.
 
@@ -152,3 +157,114 @@ class GetProjectsDescriptionsTestCase(TestCase):
         self.assertEqual(len(data[1]["leaders"]), 2)
         self.assertEqual(data[1]["leaders"][0]["name"], "Jane Doe")
         self.assertEqual(data[1]["leaders"][1]["name"], "John Doe")
+
+
+class AddProjectDescriptionTestCase(TestCase):
+    def setUp(self):
+        # Setup run before every test method.
+        self.client = APIClient()
+        self.url = f"{base}add-project-description/"
+
+        # The endpoint requires authentication, so we need to create a user
+        self.user = User.objects.create_user(username="testuser", password="12345")
+        self.client.force_authenticate(user=self.user)
+
+        self.member1 = Member.objects.create(
+            name="Alice",
+            title="CEO",
+            email="alice@example.com",
+            order=1,
+            # Add other fields as necessary
+        )
+        self.member2 = Member.objects.create(
+            name="Bob",
+            title="Teamlead",
+            email="bob@example.com",
+            order=2,
+        )
+
+        # Need to create a dummy image
+        image = Image.new("RGB", (100, 100), color="red")
+        image_file = BytesIO()
+        image.save(image_file, format="JPEG")
+        image_file.name = "test_image.jpg"
+        image_file.seek(0)
+        # Project data
+        self.valid_project_data = {
+            "name": "Test Project",
+            "description": "A test project description",
+            "image": SimpleUploadedFile(
+                name="test_image.jpg",
+                content=image_file.read(),
+                content_type="image/jpeg",
+            ),
+            "leaders": [self.member1.email, self.member2.email],
+            "hours_a_week": 10,
+        }
+
+        self.invalid_project_data = {
+            # Missing 'name' and other required fields
+            "description": "Incomplete project description",
+        }
+
+        self.invalid_project_data_missing_name = {
+            "name": "",
+            "description": "Description of new project",
+            "hours_a_week": 15,
+        }
+        self.invalid_project_data_missing_image = {
+            "name": "New Project",
+            "description": "Description of new project",
+            "hours_a_week": 15,
+            "image": None,
+        }
+
+    def tearDown(self) -> None:
+        # Clean up run after every test method.
+        ProjectDescription.objects.all().delete()
+        User.objects.all().delete()
+
+    def test_add_project_description_success(self):
+        response = self.client.post(
+            self.url, self.valid_project_data, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ProjectDescription.objects.count(), 1)
+
+    def test_add_project_invalid_data_name(self):
+        response = self.client.post(
+            self.url, self.invalid_project_data_missing_name, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ProjectDescription.objects.count(), 0)
+
+    def test_add_project_invalid_image(self):
+        response = self.client.post(
+            self.url, self.invalid_project_data_missing_image, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ProjectDescription.objects.count(), 0)
+
+    def test_add_project_invalid_data_field_validation(self):
+        # Create project data with an invalid 'hours_a_week' field
+        invalid_data = self.valid_project_data.copy()
+        invalid_data["hours_a_week"] = "invalid"
+
+        response = self.client.post(self.url, invalid_data, format="multipart")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ProjectDescription.objects.count(), 0)
+
+    def test_add_project_description_unauthenticated(self):
+        # Log out the current user
+        self.client.logout()
+
+        response = self.client.post(
+            self.url, self.valid_project_data, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(ProjectDescription.objects.count(), 0)
