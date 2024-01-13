@@ -268,3 +268,21 @@ class AddProjectDescriptionTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(ProjectDescription.objects.count(), 0)
+
+    def test_add_project_invalid_leaders(self):
+        # Create project data with invalid leader identifiers
+        invalid_leaders_data = self.valid_project_data.copy()
+        invalid_leaders_data["leaders"] = [
+            "nonexistent@example.com",
+            "invalid@example.com",
+        ]
+
+        response = self.client.post(self.url, invalid_leaders_data, format="multipart")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.assertIn("leaders", response.data)
+        self.assertIn("Invalid leaders", response.data["leaders"][0])
+
+        # Check that no new project description is added to the database
+        self.assertEqual(ProjectDescription.objects.count(), 0)
