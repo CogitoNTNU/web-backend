@@ -198,7 +198,7 @@ class AddProjectDescriptionTestCase(TestCase):
                 content=image_file.read(),
                 content_type="image/jpeg",
             ),
-            "leaders": [self.member1.email, self.member2.email],
+            "leaders": [self.member1.email],
             "hours_a_week": 10,
         }
 
@@ -231,6 +231,19 @@ class AddProjectDescriptionTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(ProjectDescription.objects.count(), 1)
+
+    def test_add_project_description_success_with_several_leaders(self):
+        # Add a second member as a leader
+
+        project_data = self.valid_project_data.copy()
+        project_data["leaders"].append(self.member2.email)
+
+        response = self.client.post(self.url, project_data, format="multipart")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ProjectDescription.objects.count(), 1)
+        # Check that the project has three leaders
+        project = ProjectDescription.objects.first()
+        self.assertEqual(project.leaders.count(), 2)
 
     def test_add_project_invalid_data_name(self):
         response = self.client.post(
