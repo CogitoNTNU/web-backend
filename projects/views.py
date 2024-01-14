@@ -40,16 +40,20 @@ def generate_image_view(request):
     serializer = CreateImageSerializer(data=request.data)
     if serializer.is_valid():
         prompt = serializer.validated_data.get("prompt")
+
         width = serializer.validated_data.get("width")
         height = serializer.validated_data.get("height")
-        
+        # Check 1024x1024, 1792x1024, or 1024x1792
+        if not (height == 1024 and width == 1024) and not (width == 1024 and height == 1792) and not (width == 1792 and height == 1024):
+            return Response({"error": "Invalid image size"}, status=status.HTTP_400_BAD_REQUEST)
+
+
         if not prompt:
             return Response({"error": "No prompt provided"}, status=status.HTTP_400_BAD_REQUEST)
         
         print(f"The prompt the user gave was: {prompt}")
         image_url, new_prompt = generate_image_from_prompt(prompt, width=width, height=height)  # This function generates the image
-        # Save the image to your media directory and create a URL to access it
-        # image_url = request.build_absolute_uri(image_url)
+
         data = {
             "image_url": image_url,
             "prompt": new_prompt,
