@@ -64,7 +64,13 @@ def generate_image_view(request):
         print(f"Image created: {image}", flush=True)
     return Response(data, status=status.HTTP_200_OK)
 
-
+@swagger_auto_schema(
+    method="GET",
+    operation_description="Get all the images from the database",
+    tags=["Marketing AI"],
+    response_description="Returns all the images",
+    responses={200: "Images", 400: "Error"},
+)
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
 def get_images(request):
