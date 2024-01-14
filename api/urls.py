@@ -4,7 +4,7 @@ from team.views import get_members, apply, get_applications, get_projects_descri
 from .views import health_check
 
 urlpatterns = [
-    path("members_by_type/", get_members, name="Members_getter"),
+    path("members-by-type/", get_members, name="Members_getter"),
     path("apply/", apply, name="Apply"),
     path("applications/", get_applications, name="Applications"),
     path("health-check/", health_check, name="Health_check"),
