@@ -13,6 +13,8 @@ import sys
 from dotenv import load_dotenv
 from pathlib import Path
 
+from projects.serializer import CreateImageSerializer
+
 # Assuming `src` is in the `MarketingAI` directory and `views.py` is in the `projects` directory
 marketing_ai_path = Path(__file__).resolve().parent / 'marketing_ai'
 sys.path.append(str(marketing_ai_path))
@@ -22,17 +24,10 @@ env_path = Path(__file__).resolve().parent / 'marketing_ai' / '.env'
 print(f"env_path: {env_path}", flush=True)
 load_dotenv(dotenv_path=env_path)
 
-request_body = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    required=['prompt'],
-    properties={
-        'prompt': openapi.Schema(type=openapi.TYPE_STRING, description='The prompt to generate an image from'),
-    },
-)
 
 @swagger_auto_schema(
     method="POST",
-    request_body=request_body,
+    request_body=CreateImageSerializer,
     operation_description="Generate an image with Marketing AI",
     tags=["Marketing AI"],
     response_description="Returns the image url",
@@ -42,14 +37,17 @@ request_body = openapi.Schema(
 @permission_classes([permissions.AllowAny])
 def generate_image_view(request):
     """ Generate an image with Marketing AI """
-    image_url = None
-    if request.method == 'POST':
-        prompt = request.data.get('prompt')
+    serializer = CreateImageSerializer(data=request.data)
+    if serializer.is_valid():
+        prompt = serializer.validated_data.get("prompt")
+        width = serializer.validated_data.get("width")
+        height = serializer.validated_data.get("height")
+        
         if not prompt:
             return Response({"error": "No prompt provided"}, status=status.HTTP_400_BAD_REQUEST)
         
         print(f"The prompt the user gave was: {prompt}")
-        image_url, new_prompt = generate_image_from_prompt(prompt)  # This function generates the image
+        image_url, new_prompt = generate_image_from_prompt(prompt, width=width, height=height)  # This function generates the image
         # Save the image to your media directory and create a URL to access it
         # image_url = request.build_absolute_uri(image_url)
         data = {
