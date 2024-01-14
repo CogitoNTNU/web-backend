@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     # Applications
     "team",
     "api",
+    "projects",
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 
