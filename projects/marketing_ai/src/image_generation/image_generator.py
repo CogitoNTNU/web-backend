@@ -127,7 +127,7 @@ class DallEImageGenerator(ImageGenerator):
      A class to generate images from a given prompt using the OpenAI API
     """
     MAX_PROMPT_LENGTH = 1000
-    SUPPORTED_SIZES = [256, 512, 1024]
+    SUPPORTED_SIZES = [1024, 1792]
     def __init__(self, model_version: str = 'dall-e-3') -> None:
         '''
         Args:
@@ -155,8 +155,9 @@ class DallEImageGenerator(ImageGenerator):
         if not isinstance(height, int):
             raise TypeError('Height must be an integer')
         
-        if (width != height):
-            raise ValueError('Width and height must be equal')
+        if (height not in self.SUPPORTED_SIZES):
+            raise ValueError(f'Height must be {self.SUPPORTED_SIZES}')
+
         
         if (width not in self.SUPPORTED_SIZES):
             raise ValueError(f'Width must be {self.SUPPORTED_SIZES}')
