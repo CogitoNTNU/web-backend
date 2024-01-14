@@ -16,6 +16,7 @@ jobs:
       - name: Build docker image and run tests
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DALL_E_API_KEY: ${{ secrets.DALL_E_API_KEY }}
         run: |
           docker compose build
           docker compose run cogito python manage.py makemigrations
