@@ -60,9 +60,11 @@ def generate_image_view(request):
             "prompt": new_prompt,
         }
         # save the image to the database
-        image = Image.objects.create(image_url=image_url, prompt=new_prompt, height=height, width=width)
-        print(f"Image created: {image}", flush=True)
-    return Response(data, status=status.HTTP_200_OK)
+        Image.objects.create(image_url=image_url, prompt=new_prompt, height=height, width=width)
+
+        return Response(data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @swagger_auto_schema(
     method="GET",
