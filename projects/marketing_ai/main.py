@@ -14,7 +14,7 @@ logging.basicConfig(filename='MarketingAI.log',
 
 logger = logging.getLogger(__name__)
 
-def generate_image_from_prompt(user_prompt: str, show_on_screen: bool = False, shall_have_text: bool = True) -> str:
+def generate_image_from_prompt(user_prompt: str, show_on_screen: bool = False, shall_have_text: bool = True, width: int = 1024, height: int = 1024) -> set[str, str]:
     """ Generates an image from a prompt and saves it to file and returns the image"""
     logger.info('Starting MarketingAI')
 
@@ -29,9 +29,9 @@ def generate_image_from_prompt(user_prompt: str, show_on_screen: bool = False, s
     logger.info(f'Starting image generation based on prompt: {image_prompt}')
 
     image_generator: ImageGenerator = create_image_generator('dall-e-3')
-    image_url = image_generator.generate_image(image_prompt, 1024, 1024)
+    image_url = image_generator.generate_image(image_prompt, width, height)
     logger.info(f"Image url: {image_url}")
-    
+
     return image_url, user_prompt
 
 
