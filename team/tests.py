@@ -11,7 +11,7 @@ class GetMembersTestCase(TestCase):
     def setUp(self):
         # Setup run before every test method.
         self.client = Client()
-        self.url = f"{base}members_by_type/"  # Assuming this is your endpoint for get_members view
+        self.url = f"{base}members-by-type/"  # Assuming this is your endpoint for get_members view
 
         # Create some Member objects for testing
 
