@@ -1,6 +1,6 @@
 # Do not commit secrets or credentials to git
 *.pem
-
+*.env
 # Do not add migrations to git
 **/migrations/*.py
 
