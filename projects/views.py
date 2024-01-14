@@ -12,6 +12,7 @@ from drf_yasg import openapi
 import sys
 from dotenv import load_dotenv
 from pathlib import Path
+from projects.models import Image
 
 from projects.serializer import CreateImageSerializer
 
@@ -58,4 +59,24 @@ def generate_image_view(request):
             "image_url": image_url,
             "prompt": new_prompt,
         }
+        # save the image to the database
+        image = Image.objects.create(image_url=image_url, prompt=new_prompt, height=height, width=width)
+        print(f"Image created: {image}", flush=True)
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def get_images(request):
+    """ Get all the images from the database """
+    images = Image.objects.all()
+    data = []
+    for image in images:
+        data.append({
+            "image_url": image.image_url,
+            "prompt": image.prompt,
+            "date_of_generation": image.date_of_generation,
+            "height": image.height,
+            "width": image.width,
+        })
     return Response(data, status=status.HTTP_200_OK)
