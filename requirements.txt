@@ -71,4 +71,4 @@ tenacity==8.2.3
 tomli==2.0.1
 tqdm==4.66.1
 typing-inspect==0.9.0
-yarl==1.9.2
+yarl==1.9.4
