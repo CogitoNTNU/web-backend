@@ -13,7 +13,7 @@ class Member(models.Model):
     image = models.ImageField("Image", null=True, blank=True,
                               upload_to="images/", help_text=" The image of the member")
     category = models.CharField("Category", max_length=30, blank=True, default="",
-                                help_text=" The category of the member, like 'Styre' or 'Web', different from title like 'CEO'")
+                                help_text=" The category of the member, like 'Styret' or 'Web', different from title like 'CEO'")
     email = models.EmailField("Email", max_length=50, blank=True,
                               unique=False, default="", help_text=" The email of the member")
     github = models.URLField("GitHub", max_length=200, blank=True,
@@ -39,7 +39,7 @@ class MemberApplication(models.Model):
         auto_now_add=True,  # Use auto_now_add for the creation timestamp
         help_text="The date and time the application was sent",
     )
-
+    
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 

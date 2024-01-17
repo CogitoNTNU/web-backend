@@ -46,7 +46,7 @@ def get_members(request) -> JsonResponse:
     try:
         member_type: str = request.data.get("member_type")
         if member_type == "Alle Medlemmer":
-            members = Member.objects.all()
+            members = Member.objects.all().order_by('order')
         else:
             members = Member.objects.filter(category=member_type)
         serializer = MemberSerializer(members, many=True)
@@ -76,7 +76,8 @@ application_error_response = openapi.Response(
     operation_description="Sends in an application to Cogito",
     tags=["Member Management"],
     response_description="Returns a message confirming that the application has been registered.",
-    responses={200: application_success_response, 400: application_error_response},
+    responses={200: application_success_response,
+               400: application_error_response},
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
