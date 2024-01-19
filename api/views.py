@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny
 
+from django.contrib.auth.models import User
+
 # Create your views here.
 
 
@@ -19,7 +21,7 @@ from rest_framework.permissions import AllowAny
 def health_check(request):
     try:
         # Check database connectivity
-        # You might want to execute a simple read operation here
+        User.objects.exists()
 
         cache.set("health_check", "ok", timeout=30)
         if cache.get("health_check") != "ok":
