@@ -46,24 +46,21 @@ def generate_image_view(request):
         width = serializer.validated_data.get("width")
         height = serializer.validated_data.get("height")
         # Check 1024x1024, 1792x1024, or 1024x1792
-        if (
-            not (height == 1024 and width == 1024)
-            and not (width == 1024 and height == 1792)
-            and not (width == 1792 and height == 1024)
-        ):
-            return Response(
-                {"error": "Invalid image size"}, status=status.HTTP_400_BAD_REQUEST
-            )
+        if not (height == 1024 and width == 1024) and not (width == 1024 and height == 1792) and not (width == 1792 and height == 1024):
+            return Response({"error": "Invalid image size"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         if not prompt:
-            return Response(
-                {"error": "No prompt provided"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
+            return Response({"error": "No prompt provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
         print(f"The prompt the user gave was: {prompt}")
-        image_url, new_prompt = generate_image_from_prompt(
-            prompt, width=width, height=height
-        )  # This function generates the image
+        image_url: str
+        new_prompt: str
+        try:
+            image_url, new_prompt = generate_image_from_prompt(prompt, width=width, height=height)  # This function generates the image
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         data = {
             "image_url": image_url,
@@ -77,7 +74,6 @@ def generate_image_view(request):
         return Response(data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @swagger_auto_schema(
     method="GET",
