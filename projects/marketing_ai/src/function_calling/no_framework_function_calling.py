@@ -1,48 +1,47 @@
 import openai
 import json
-from src.config import Config
+from src.config import Config, get_config
 
 
-
-openai.api_key = Config().API_KEY
+openai.api_key = get_config().API_KEY
 
 
 def chat_with_chatgpt(prompt):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {
-                "role": "user",
-                "content": prompt},
+            {"role": "user", "content": prompt},
         ],
         temperature=0.5,
         max_tokens=150,
-        functions=[{
-            "name": "add_numbers",
-            "description": "Add two numbers",
-            'parameters': {
-                'type': 'object',
-                'properties': {
-                    'number_a': {
-                        'type': 'number',
-                        'description': 'The first number'
+        functions=[
+            {
+                "name": "add_numbers",
+                "description": "Add two numbers",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "number_a": {
+                            "type": "number",
+                            "description": "The first number",
+                        },
+                        "number_b": {
+                            "type": "number",
+                            "description": "The second number",
+                        },
                     },
-                    'number_b': {
-                        'type': 'number',
-                        'description': 'The second number'
-                    }
-                }
+                },
             }
-        }],
+        ],
     )
     return response.choices[0]
 
-def prompt_and_parse(my_prompt:str = "What is the sum of 25 minus 5?"):
 
+def prompt_and_parse(my_prompt: str = "What is the sum of 25 minus 5?"):
     def add_numbers(number_a, number_b):
         return number_a + number_b
 
-    #my_prompt = "what colour is the sky"a
+    # my_prompt = "what colour is the sky"a
     msg = chat_with_chatgpt(my_prompt)
     print(msg)
     ########## PARSE THE RESPONSE ##########
@@ -50,15 +49,15 @@ def prompt_and_parse(my_prompt:str = "What is the sum of 25 minus 5?"):
     data = msg
 
     # Extract function name and arguments
-    function_name = data['message']['function_call']['name']
-    arguments_json = data['message']['function_call']['arguments']
+    function_name = data["message"]["function_call"]["name"]
+    arguments_json = data["message"]["function_call"]["arguments"]
 
     # Parse arguments JSON string to a dictionary
     arguments = json.loads(arguments_json)
 
     # Extract numeric values
-    number_a = float(arguments['number_a'])
-    number_b = float(arguments['number_b'])
+    number_a = float(arguments["number_a"])
+    number_b = float(arguments["number_b"])
 
     # Print the results
     print(f"Function Name: {function_name}")
