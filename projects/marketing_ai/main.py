@@ -35,16 +35,15 @@ def generate_image_from_prompt(
 
     logger.info("Starting MarketingAI")
 
-    # classification = run_agent(user_prompt)
+    classification = run_agent(user_prompt)
 
-    # image_prompt = get_image_template(user_prompt, classification, shall_have_text)
+    image_prompt = get_image_template(user_prompt, classification, shall_have_text)
 
-    # image_generator: ImageGenerator = create_image_generator("dall-e-3")
-    # image_url = image_generator.generate_image(image_prompt, width, height)
+    image_generator: ImageGenerator = create_image_generator("dall-e-3")
+    image_url = image_generator.generate_image(image_prompt, width, height)
 
     get_config().next_key()
     print(f"Config: {get_config().API_KEY}", flush=True)
-    image_url = "ssdølkj"
     return image_url, user_prompt
 
 
