@@ -54,7 +54,8 @@ def generate_image_view(request):
             return Response({"error": "No prompt provided"}, status=status.HTTP_400_BAD_REQUEST)
         
         print(f"The prompt the user gave was: {prompt}")
-        image_url, new_prompt: str
+        image_url: str
+        new_prompt: str
         try:
             image_url, new_prompt = generate_image_from_prompt(prompt, width=width, height=height)  # This function generates the image
 
