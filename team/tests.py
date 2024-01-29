@@ -28,23 +28,20 @@ class GetMembersTestCase(TestCase):
         Member.objects.all().delete()
 
     def test_get_all_members(self):
-        response = self.client.post(
-            self.url, {"member_type": "Alle Medlemmer"})
+        response = self.client.get(self.url, {"member_type": "Alle Medlemmer"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Alice", response.content.decode())
 
     def test_get_members_by_category(self):
-        response = self.client.post(
-            self.url, {"member_type": "Another Category"})
+        response = self.client.get(self.url, {"member_type": "Another Category"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Bob", response.content.decode())
         self.assertNotIn("Alice", response.content.decode())
 
     def test_get_members_invalid_category(self):
-        response = self.client.post(
-            self.url, {"member_type": "Invalid Category"})
+        response = self.client.get(self.url, {"member_type": "Invalid Category"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content.decode(), "[]")
@@ -151,16 +148,13 @@ class ApplyTestCase(TestCase):
         )
 
     def test_apply_successful(self):
-        response = self.client.post(
-            self.url, self.valid_payload, format="json")
+        response = self.client.post(self.url, self.valid_payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("Application sent in successfully",
-                      response.data["message"])
+        self.assertIn("Application sent in successfully", response.data["message"])
 
         # Check that the application was created in the database
         self.assertTrue(
-            MemberApplication.objects.filter(
-                email="johndoe@example.com").exists()
+            MemberApplication.objects.filter(email="johndoe@example.com").exists()
         )
         # Check that the amount of applications in the database has increased by 1
         self.assertEqual(
@@ -239,12 +233,10 @@ class ApplyTestCase(TestCase):
         Applications with the same fields should be allowed as one might accidentally send in the same application twice,
         or send in an application with the same information as a previous one.
         """
-        response1 = self.client.post(
-            self.url, self.valid_payload, format="json")
+        response1 = self.client.post(self.url, self.valid_payload, format="json")
         self.assertEqual(response1.status_code, status.HTTP_200_OK)
 
-        response2 = self.client.post(
-            self.url, self.valid_payload, format="json")
+        response2 = self.client.post(self.url, self.valid_payload, format="json")
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
         # Check that the applications was created in the database
@@ -322,15 +314,13 @@ class SQLInjectionTestCase(TestCase):
 
         self.valid_payload["about"] = sql_injection_payload
 
-        response = self.client.post(
-            self.url, self.valid_payload, format="json")
+        response = self.client.post(self.url, self.valid_payload, format="json")
 
         # Expecting a normal response since Django ORM should safely handle the input
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify that the 'about' field contains the SQL injection code as plain text
-        application = MemberApplication.objects.get(
-            email="johndoe@example.com")
+        application = MemberApplication.objects.get(email="johndoe@example.com")
         self.assertEqual(application.about, sql_injection_payload)
 
         # Verifying that the database integrity is maintained
