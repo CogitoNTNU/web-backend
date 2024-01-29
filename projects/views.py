@@ -29,7 +29,7 @@ load_dotenv(dotenv_path=env_path)
 
 @swagger_auto_schema(
     method="GET",
-    request_body=CreateImageSerializer,
+    query_serializer=CreateImageSerializer,
     operation_description="Generate an image with Marketing AI",
     tags=["Marketing AI"],
     response_description="Returns the image url",
@@ -39,7 +39,7 @@ load_dotenv(dotenv_path=env_path)
 @permission_classes([permissions.AllowAny])
 def generate_image_view(request):
     """Generate an image with Marketing AI"""
-    serializer = CreateImageSerializer(data=request.data)
+    serializer = CreateImageSerializer(data=request.query_params)
     if serializer.is_valid():
         prompt = serializer.validated_data.get("prompt")
 
