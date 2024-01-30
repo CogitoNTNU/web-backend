@@ -28,14 +28,14 @@ load_dotenv(dotenv_path=env_path)
 
 
 @swagger_auto_schema(
-    method="GET",
-    query_serializer=CreateImageSerializer,
+    method="POST",
+    request_body=CreateImageSerializer,
     operation_description="Generate an image with Marketing AI",
     tags=["Marketing AI"],
     response_description="Returns the image url",
     responses={200: "Image url", 400: "Error"},
 )
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([permissions.AllowAny])
 def generate_image_view(request):
     """Generate an image with Marketing AI"""
