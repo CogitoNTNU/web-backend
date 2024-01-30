@@ -28,20 +28,20 @@ class GetMembersTestCase(TestCase):
         Member.objects.all().delete()
 
     def test_get_all_members(self):
-        response = self.client.get(self.url, {"member_type": "Alle Medlemmer"})
+        response = self.client.post(self.url, {"member_type": "Alle Medlemmer"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Alice", response.content.decode())
 
     def test_get_members_by_category(self):
-        response = self.client.get(self.url, {"member_type": "Another Category"})
+        response = self.client.post(self.url, {"member_type": "Another Category"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Bob", response.content.decode())
         self.assertNotIn("Alice", response.content.decode())
 
     def test_get_members_invalid_category(self):
-        response = self.client.get(self.url, {"member_type": "Invalid Category"})
+        response = self.client.post(self.url, {"member_type": "Invalid Category"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content.decode(), "[]")
