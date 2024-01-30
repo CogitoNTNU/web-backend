@@ -44,7 +44,7 @@ member_error_response = openapi.Response(
 def get_members(request) -> JsonResponse:
     """Returns the members wished upon the request"""
     try:
-        member_type: str = request.query_params.get("member_type")
+        member_type: str = request.data.get("member_type")
         if member_type == "Alle Medlemmer":
             members = Member.objects.all().order_by("order")
         else:

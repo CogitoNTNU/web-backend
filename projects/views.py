@@ -39,7 +39,7 @@ load_dotenv(dotenv_path=env_path)
 @permission_classes([permissions.AllowAny])
 def generate_image_view(request):
     """Generate an image with Marketing AI"""
-    serializer = CreateImageSerializer(data=request.query_params)
+    serializer = CreateImageSerializer(data=request.data)
     if serializer.is_valid():
         prompt = serializer.validated_data.get("prompt")
 
