@@ -52,7 +52,7 @@ jsonpointer==2.4
 langchain==0.0.332
 langsmith==0.0.62
 marshmallow==3.20.1
-multidict==6.0.4
+multidict==6.0.5
 mypy-extensions==1.0.0
 numpy==1.26.1
 openai==0.28.1
