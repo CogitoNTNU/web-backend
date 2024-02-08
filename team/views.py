@@ -57,7 +57,6 @@ def get_members(request) -> JsonResponse:
         response = {"error": e}
         return Response(data=response, status=status.HTTP_400_BAD_REQUEST)
 
-
 # Apply
 application_success_response = openapi.Response(
     description="Sends an application for membership to Cogito",
