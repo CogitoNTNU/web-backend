@@ -46,9 +46,9 @@ def get_members(request) -> JsonResponse:
     try:
         member_type: str = request.query_params.get("member_type")
         if member_type == "Alle Medlemmer":
-            members = Member.objects.all().order_by("order")
+            members = Member.objects.all()
         else:
-            members = Member.objects.filter(category=member_type)
+            members = Member.objects.filter(category__title=member_type)
         serializer = MemberSerializer(members, many=True)
 
         return JsonResponse(serializer.data, safe=False)
@@ -56,6 +56,7 @@ def get_members(request) -> JsonResponse:
     except Exception as e:
         response = {"error": e}
         return Response(data=response, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Apply
 application_success_response = openapi.Response(
@@ -75,7 +76,8 @@ application_error_response = openapi.Response(
     operation_description="Sends in an application to Cogito",
     tags=["Member Management"],
     response_description="Returns a message confirming that the application has been registered.",
-    responses={200: application_success_response, 400: application_error_response},
+    responses={200: application_success_response,
+               400: application_error_response},
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
