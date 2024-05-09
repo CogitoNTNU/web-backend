@@ -1,8 +1,6 @@
-from io import BytesIO
 from django.test import TestCase, Client
-from PIL import Image
-from django.contrib.auth.models import User
 from rest_framework import status
+
 from team.models import Member, MemberApplication, MemberCategory
 
 # Create your tests here.
