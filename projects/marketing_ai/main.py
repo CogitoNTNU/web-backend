@@ -12,14 +12,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-keys = [
-    # TODO ADD KEYS HERE
-    "1",
-    "2",
-    "3",
-    "4",
-]
-config = get_config().set_keys(keys)
 
 
 def generate_image_from_prompt(
@@ -30,7 +22,6 @@ def generate_image_from_prompt(
     height: int = 1024,
 ) -> set[str, str]:
     """Generates an image from a prompt and saves it to file and returns the image"""
-    global current_key
     print("Starting MarketingAI", flush=True)
 
     logger.info("Starting MarketingAI")
@@ -43,7 +34,6 @@ def generate_image_from_prompt(
     image_url = image_generator.generate_image(image_prompt, width, height)
 
     get_config().next_key()
-    print(f"Config: {get_config().API_KEY}", flush=True)
     return image_url, user_prompt
 
 
