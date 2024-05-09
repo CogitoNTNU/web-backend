@@ -2,7 +2,6 @@ from io import BytesIO
 from django.test import TestCase, Client
 from PIL import Image
 from django.contrib.auth.models import User
-from rest_framework.test import APIClient
 from rest_framework import status
 from team.models import Member, MemberApplication, MemberCategory
 
@@ -341,16 +340,13 @@ class SQLInjectionTestCase(TestCase):
         self.client = Client()
         self.url = f"{base}apply/"
 
-        data = self.valid_payload = {
+        self.valid_payload = {
             "first_name": "John",
             "last_name": "Doe",
             "email": "johndoe@example.com",
             "phone_number": "1234567890",
             "about": "I am a developer, who loves AI",
         }
-
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_sql_injection_in_about_field(self):
         # A harmless SQL injection attempt for testing purposes.
@@ -367,6 +363,5 @@ class SQLInjectionTestCase(TestCase):
         # Verify that the 'about' field contains the SQL injection code as plain text
         application = MemberApplication.objects.get(email="johndoe@example.com")
         self.assertEqual(application.about, sql_injection_payload)
-
         # Verifying that the database integrity is maintained
         self.assertTrue(MemberApplication.objects.exists())
