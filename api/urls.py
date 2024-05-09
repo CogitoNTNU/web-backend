@@ -1,7 +1,11 @@
 from django.urls import path
 from projects.views import generate_image_view, get_images
-from team.views import get_members, apply, get_applications, get_projects_descriptions, add_project_description
-from .views import health_check
+from team.views import (
+    get_members,
+    apply,
+    get_applications,
+)
+from api.views import health_check
 
 urlpatterns = [
     path("members-by-type/", get_members, name="Members_getter"),

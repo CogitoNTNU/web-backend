@@ -76,8 +76,7 @@ application_error_response = openapi.Response(
     operation_description="Sends in an application to Cogito",
     tags=["Member Management"],
     response_description="Returns a message confirming that the application has been registered.",
-    responses={200: application_success_response,
-               400: application_error_response},
+    responses={200: application_success_response, 400: application_error_response},
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -185,7 +184,21 @@ def add_project_description(request):
     """Add a project"""
     serializer = ProjectDescriptionSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        # Check if the leaders are valid members
+        leader_emails = request.data.get("leaders", [])
+        for email in leader_emails:
+            if not Member.objects.filter(email=email).exists():
+                message = {
+                    "error": f"Invalid leader member, member {email} does not exist"
+                }
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+        project = serializer.save()
+
+        # Associate leaders
+        for email in leader_emails:
+            leader = Member.objects.get(email=email)
+            project.leaders.add(leader)
         message = {"message": "Project description added successfully"}
         return Response(message, status=status.HTTP_200_OK)
     else:

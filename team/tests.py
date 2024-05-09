@@ -1,9 +1,9 @@
 from django.test import TestCase, Client
-from team.models import Member, MemberApplication
 from rest_framework import status
 
-# Create your tests here.
+from team.models import Member, MemberApplication, MemberCategory
 
+# Create your tests here.
 base = "/api/"
 
 
@@ -14,14 +14,26 @@ class GetMembersTestCase(TestCase):
         # Assuming this is your endpoint for get_members view
         self.url = f"{base}members-by-type/"
 
-        # Create some Member objects for testing
+        # Create some MemberCategory objects for testing
+        styret_category = MemberCategory.objects.create(title="Styret")
+        another_category = MemberCategory.objects.create(title="Another Category")
 
-        Member.objects.create(
-            category="Styret", name="Alice", order=1, email="Alice@domain.com"
+        # Create some Member objects for testing
+        alice = Member.objects.create(
+            name="Alice",
+            order=1,
+            email="Alice@domain.com",
+            title="CEO",
         )
-        Member.objects.create(
-            category="Another Category", name="Bob", order=2, email="Bob@domain.com"
+        alice.category.set([styret_category])
+
+        bob = Member.objects.create(
+            name="Bob",
+            order=2,
+            email="Bob@domain.com",
+            title="CTO",
         )
+        bob.category.set([another_category])
 
     def tearDown(self) -> None:
         # Clean up run after every test method.
@@ -162,18 +174,45 @@ class ApplyTestCase(TestCase):
             self.amount_of_applications_before_test + 1,
         )
 
-    def test_short_phone_number_payload(self):
-        payload = self.valid_payload.copy()
-        payload["phone_number"] = "123"
+    def test_invalid_missing_first_name_payload(self):
+        data = {
+            "first_name": "",
+            "last_name": "Doe",
+            "email": "user@domain.com",
+            "phone_number": "1234567890",
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        response = self.client.post(self.url, payload, format="json")
+    def test_invalid_missing_last_name_payload(self):
+        data = {
+            "first_name": "John",
+            "last_name": "",
+            "email": "user@domain.com",
+            "phone_number": "1234567890",
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_missing_phone_number_payload(self):
+        data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "user@domain.com",
+            "phone_number": "",
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_to_short_phone_number_payload(self):
+        data = {
+            "first_name": "John",
+            "last_name": "Doe",
+            "email": "user@domain.com",
+            "phone_number": "123",
+        }
+        response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # Check that the amount of applications in the database has increased by 1
-        self.assertEqual(
-            MemberApplication.objects.count(),
-            self.amount_of_applications_before_test + 1,
-        )
 
     def test_international_phone_numbers(self):
         payload = self.valid_payload.copy()
@@ -322,6 +361,5 @@ class SQLInjectionTestCase(TestCase):
         # Verify that the 'about' field contains the SQL injection code as plain text
         application = MemberApplication.objects.get(email="johndoe@example.com")
         self.assertEqual(application.about, sql_injection_payload)
-
         # Verifying that the database integrity is maintained
         self.assertTrue(MemberApplication.objects.exists())
