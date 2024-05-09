@@ -32,23 +32,23 @@ member_error_response = openapi.Response(
 
 
 @swagger_auto_schema(
-    method="POST",
-    request_body=FindMemberSerializer,
-    operation_description="Get members",
+    method="GET",
+    query_serializer=FindMemberSerializer,
+    operation_description="Get members with the specified category, for retrieval of all members set it to 'Alle Medlemmer' ",
     tags=["Member Management"],
-    response_description="",
+    response_description="Returns the members wished upon the request",
     responses={200: member_success_response, 400: member_error_response},
 )
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([permissions.AllowAny])
 def get_members(request) -> JsonResponse:
     """Returns the members wished upon the request"""
     try:
-        member_type: str = request.data.get("member_type")
+        member_type: str = request.query_params.get("member_type")
         if member_type == "Alle Medlemmer":
             members = Member.objects.all()
         else:
-            members = Member.objects.filter(category=member_type)
+            members = Member.objects.filter(category__title=member_type)
         serializer = MemberSerializer(members, many=True)
 
         return JsonResponse(serializer.data, safe=False)

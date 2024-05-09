@@ -5,6 +5,8 @@ from .models import Member, MemberApplication, ProjectDescription
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    category = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Member
         fields = "__all__"

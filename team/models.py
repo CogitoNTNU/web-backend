@@ -2,17 +2,38 @@ from django.db import models
 
 # Create your models here.
 
+
+class MemberCategory(models.Model):
+    title = models.CharField(max_length=30)
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+
 class Member(models.Model):
     order = models.IntegerField(
         "Order", primary_key=True, blank=True, default=0, help_text=" The order of the member in the list to be displayed on the frontend")
-    name = models.CharField("Name", max_length=30, blank=True, default="", help_text=" The full name of the member")
-    title = models.CharField("Title", max_length=30, blank=True, default="", help_text=" The title of the member, like 'CEO' or 'Team Lead'")
-    image = models.ImageField("Image", null=True, blank=True, upload_to="images/", help_text=" The image of the member")
-    category = models.CharField("Category", max_length=30, blank=True, default="", help_text=" The category of the member, like 'Styre' or 'Web', different from title like 'CEO'")
-    email = models.EmailField("Email", max_length=50, blank=True, unique=True, default="", help_text=" The email of the member")
-    github = models.URLField("GitHub", max_length=200, blank=True, default="", help_text=" The link of the member's GitHub profile")
+    name = models.CharField("Name", max_length=30, blank=True,
+                            default="", help_text=" The full name of the member")
+    title = models.CharField("Title", max_length=30, blank=True, default="",
+                             help_text=" The title of the member, like 'CEO' or 'Team Lead'")
+    image = models.ImageField("Image", null=True, blank=True,
+                              upload_to="images/", help_text=" The image of the member")
+
+    category = models.ManyToManyField(MemberCategory)
+
+    email = models.EmailField("Email", max_length=50, blank=True,
+                              unique=False, default="", help_text=" The email of the member")
+    github = models.URLField("GitHub", max_length=200, blank=True,
+                             default="", help_text=" The link of the member's GitHub profile")
     linkedIn = models.URLField(
-        "LinkedIn", max_length=200, blank=True, default="" , help_text="The link of the member's LinkedIn profile")
+        "LinkedIn", max_length=200, blank=True, default="", help_text="The link of the member's LinkedIn profile")
+
+    class Meta:
+        ordering = ["order"]
 
     def __str__(self) -> str:
         return self.name
@@ -37,7 +58,6 @@ class MemberApplication(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-
 class ProjectDescription(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -45,7 +65,6 @@ class ProjectDescription(models.Model):
     # Add leader members using ManyToManyField, referencing 'email' field of Member
     leaders = models.ManyToManyField(Member)
     hours_a_week = models.IntegerField()
-
 
     def __str__(self) -> str:
         return self.name
