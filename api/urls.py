@@ -4,8 +4,6 @@ from team.views import (
     get_members,
     apply,
     get_applications,
-    get_projects_descriptions,
-    add_project_description,
 )
 from api.views import health_check
 
