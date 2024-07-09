@@ -1,8 +1,10 @@
 from django.shortcuts import render
 
 # Create your views here.
-from rest_framework.permissions import AllowAny
+from django.core.mail import send_mail
+from django.conf import settings
 from django.http import JsonResponse
+from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
@@ -85,7 +87,18 @@ def apply(request):
 
     serializer = MemberApplicationSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        application = serializer.save()
+
+        # Send confirmation email
+        subject = "Application Received"
+        message = (
+            f"Dear {application.first_name} {application.last_name},\n\n"
+            "Thank you for your application. We have received your details and our team will get back to you soon.\n\n"
+            "Best regards,\nCogito NTNU"
+        )
+        recipient_list = [application.email]
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
         message = {"message": "Application sent in successfully"}
         return Response(message, status=status.HTTP_200_OK)
     else:
