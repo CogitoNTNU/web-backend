@@ -53,3 +53,11 @@ To run Django migrations, you can use the following command:
 docker compose run cogito python manage.py makemigrations
 docker compose run cogito python manage.py migrate
 ```
+
+### Create superuser
+
+To log into the django database, create a superuser
+
+```bash
+docker-compose run cogito python manage.py createsuperuser
+```
