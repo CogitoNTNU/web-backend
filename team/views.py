@@ -87,17 +87,20 @@ def apply(request):
 
     serializer = MemberApplicationSerializer(data=request.data)
     if serializer.is_valid():
-        application = serializer.save()
+        application: MemberApplication = serializer.save()
 
         # Send confirmation email
-        subject = "Application Received"
-        message = (
-            f"Dear {application.first_name} {application.last_name},\n\n"
-            "Thank you for your application. We have received your details and our team will get back to you soon.\n\n"
-            "Best regards,\nCogito NTNU"
-        )
+        subject = "Application Received by Cogito NTNU"
+        message = f"""Dear {application.first_name} {application.last_name},\n\nThank you for your application. We have received your details and our team will send you future details on Email and/or Phone. \nIf you have any questions, please feel free to contact us at: styre@cogito-ntnu.no\n\nBest regards,\nCogito NTNU """
         recipient_list = [application.email]
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=recipient_list,
+            fail_silently=False,
+        )
 
         message = {"message": "Application sent in successfully"}
         return Response(message, status=status.HTTP_200_OK)

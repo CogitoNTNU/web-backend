@@ -14,6 +14,8 @@ services:
       - db
     environment:
       - DEBUG=True
+      - EMAIL_HOST_USER
+      - EMAIL_HOST_PASSWORD
       - OPENAI_API_KEY
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
