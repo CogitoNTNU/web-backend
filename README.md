@@ -35,6 +35,8 @@ Create a `.env` file in the root directory of the project and add the following 
 
 ```bash
 DJANGO_SECRET_KEY = 'YOUR_SECRET_KEY'
+EMAIL_HOST_USER = "YOUR_EMAIL"
+EMAIL_HOST_PASSWORD  = "YOUR_EMAIL_PASSWORD"
 ```
 
 Optionally, you can add the following environment variables to customize the project:
