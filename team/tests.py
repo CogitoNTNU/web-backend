@@ -357,10 +357,10 @@ class UpdateMemberImageViewTests(TestCase):
 
     def test_update_member_images_success(self):
         temp_image1 = self._create_temp_image()
-        temp_image1.name = "John_Doe.jpg"
+        temp_image1.name = self.member1.name + ".jpg"
 
         temp_image2 = self._create_temp_image()
-        temp_image2.name = "Jane_Smith.jpg"
+        temp_image2.name = self.member2.name + ".jpg"
 
         response = self.client.post(
             self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
@@ -374,7 +374,7 @@ class UpdateMemberImageViewTests(TestCase):
 
     def test_update_member_images_partial_success(self):
         temp_image1 = self._create_temp_image()
-        temp_image1.name = "John_Doe.jpg"
+        temp_image1.name = self.member1.name + ".jpg"
 
         temp_image2 = self._create_temp_image()
         temp_image2.name = "Non_Existent.jpg"
@@ -391,7 +391,7 @@ class UpdateMemberImageViewTests(TestCase):
 
     def test_update_member_who_has_image(self):
         temp_image1 = self._create_temp_image()
-        temp_image1.name = "John_Doe.jpg"
+        temp_image1.name = self.member1.name + ".jpg"
 
         response = self.client.post(
             self.url, {"images": [temp_image1]}, format="multipart"
@@ -405,7 +405,7 @@ class UpdateMemberImageViewTests(TestCase):
 
         # Update the image of the same member
         temp_image2 = self._create_temp_image()
-        temp_image2.name = "John_Doe.jpg"
+        temp_image2.name = self.member1.name + ".jpg"
 
         response = self.client.post(
             self.url, {"images": [temp_image2]}, format="multipart"
