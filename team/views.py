@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -63,12 +64,26 @@ def get_members(request) -> JsonResponse:
 
 
 class UpdateMemberImageView(APIView):
+    serializer_class = MemberImageUploadSerializer
+    parser_classes = [MultiPartParser]
+
+    image_param = openapi.Parameter(
+        "images",
+        openapi.IN_FORM,
+        description="Application files",
+        type=openapi.TYPE_ARRAY,
+        items=openapi.Items(type=openapi.TYPE_FILE),
+        required=True,
+    )
 
     @swagger_auto_schema(
         operation_description="Update the image of a member",
         tags=["Member Management"],
-        request_body=MemberImageUploadSerializer,
-        responses={200: "Success", 400: "Bad Request"},
+        manual_parameters=[image_param],
+        responses={
+            200: openapi.Response(description="Files processed successfully"),
+            400: openapi.Response(description="Invalid request data"),
+        },
     )
     def post(self, request, *args, **kwargs):
         serializer = MemberImageUploadSerializer(data=request.data)
@@ -78,8 +93,7 @@ class UpdateMemberImageView(APIView):
             members_not_found = []
 
             for image in images:
-                # Extract member name from image file name (assuming 'FirstName_LastName.ext')
-                member_name = image.name.rsplit(".", 1)[0]
+                member_name, file_extension = image.name.rsplit(".", 1)
 
                 try:
                     member = Member.objects.get(name=member_name)
