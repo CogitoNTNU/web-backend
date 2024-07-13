@@ -389,6 +389,33 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(len(response.data["updated_members"]), 1)
         self.assertEqual(len(response.data["members_not_found"]), 1)
 
+    def test_update_member_who_has_image(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = "John_Doe.jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image1]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
+        # Update the image of the same member
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = "John_Doe.jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image2]}, format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
     def test_update_member_images_invalid_request(self):
         response = self.client.post(self.url, {}, format="multipart")
 
