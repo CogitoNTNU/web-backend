@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -140,82 +141,86 @@ def get_applications(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Get Projects
-project_success_response = openapi.Response(
-    description="Get all projects",
-    examples={
-        "application/json": [
-            {
-                "name": "Project Name",
-                "description": "Project Description",
-                "image": "Image",
-                "github": "GitHub",
-                "website": "Website",
-            }
-        ]
-    },
-)
+class ProjectDescriptionView(GenericAPIView):
 
+    @swagger_auto_schema(
+        operation_description="Get all projects",
+        tags=["Project Management"],
+        response_description="Returns all projects",
+        response={
+            200: openapi.Response(
+                description="Get all projects",
+                examples={
+                    "application/json": [
+                        {
+                            "name": "Project Name",
+                            "description": "Project Description",
+                            "image": "Image",
+                            "github": "GitHub",
+                            "website": "Website",
+                        }
+                    ]
+                },
+            ),
+        },
+    )
+    @permission_classes([AllowAny])
+    def get(self, request):
+        projects = ProjectDescription.objects.all()
+        serializer = ProjectDescriptionSerializer(projects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-@swagger_auto_schema(
-    method="GET",
-    operation_description="Get all projects",
-    tags=["Project Management"],
-    response_description="Returns all projects",
-    response={200: project_success_response},
-)
-@api_view(["GET"])
-def get_projects_descriptions(request):
-    """Returns all projects"""
-    projects = ProjectDescription.objects.all()
-    serializer = ProjectDescriptionSerializer(projects, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    # Add authentication
 
+    @swagger_auto_schema(
+        operation_description="Add a project description",
+        tags=["Project Management"],
+        request_body=ProjectDescriptionSerializer,
+        response_description="Returns a message confirming that the project has been added.",
+        responses={
+            200: openapi.Response(
+                description="Add a project",
+                examples={
+                    "application/json": {
+                        "message": "Project added successfully",
+                    }
+                },
+            ),
+            400: openapi.Response(
+                description="The project was not added due to missing fields or invalid data",
+                examples={"application/json": {"error": "Missing fields"}},
+            ),
+            401: openapi.Response(
+                description="Authentication credentials were not provided"
+            ),
+        },
+    )
+    @permission_classes([IsAuthenticated])
+    def post(self, request):
+        """Add a project"""
+        serializer = ProjectDescriptionSerializer(data=request.data)
+        if serializer.is_valid():
+            # Check if the leaders are valid members
+            leader_emails: list[str] = request.data.get("leader_emails", [])
+            print(leader_emails, flush=True)
+            leaders = Member.objects.filter(email=leader_emails)
+            for email in leader_emails:
+                try:
+                    leader = Member.objects.get(email=email)
+                    leaders.append(leader)
+                except Member.DoesNotExist:
+                    message = {
+                        "error": f"Invalid leader member, member {email} does not exist"
+                    }
+                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-# Add Project
-project_success_response = openapi.Response(
-    description="Add a project",
-    examples={
-        "application/json": {
-            "message": "Project added successfully",
-        }
-    },
-)
-project_error_response = openapi.Response(
-    description="The project was not added due to missing fields or invalid data",
-    examples={"application/json": {"error": "Missing fields"}},
-)
+            project: ProjectDescription = serializer.save()
 
-
-@swagger_auto_schema(
-    method="POST",
-    operation_description="Add a project description",
-    tags=["Project Management"],
-    response_description="Returns a message confirming that the project has been added.",
-    responses={200: project_success_response, 400: project_error_response},
-)
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def add_project_description(request):
-    """Add a project"""
-    serializer = ProjectDescriptionSerializer(data=request.data)
-    if serializer.is_valid():
-        # Check if the leaders are valid members
-        leader_emails = request.data.get("leaders", [])
-        for email in leader_emails:
-            if not Member.objects.filter(email=email).exists():
-                message = {
-                    "error": f"Invalid leader member, member {email} does not exist"
-                }
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-        project = serializer.save()
-
-        # Associate leaders
-        for email in leader_emails:
-            leader = Member.objects.get(email=email)
-            project.leaders.add(leader)
-        message = {"message": "Project description added successfully"}
-        return Response(message, status=status.HTTP_200_OK)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Associate leaders
+            for email in leader_emails:
+                leader = Member.objects.get(email=email)
+                project.leaders.add(leader)
+            message = {"message": "Project description added successfully"}
+            return Response(message, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

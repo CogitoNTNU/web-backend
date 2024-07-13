@@ -4,6 +4,7 @@ from team.views import (
     get_members,
     apply,
     get_applications,
+    ProjectDescriptionView,
 )
 from api.views import health_check
 
@@ -12,6 +13,11 @@ urlpatterns = [
     path("apply/", apply, name="Apply"),
     path("applications/", get_applications, name="Applications"),
     path("health-check/", health_check, name="Health_check"),
+    path(
+        "projects/descriptions/",
+        ProjectDescriptionView.as_view(),
+        name="Project_descriptions",
+    ),
     path("projects/marketing-ai/", generate_image_view, name="Generate_image"),
     path("projects/marketing-ai/images", get_images, name="Get_images"),
 ]

@@ -27,8 +27,19 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
 
 
 class ProjectDescriptionSerializer(serializers.ModelSerializer):
-    leaders = MemberSerializer(many=True, read_only=True)
+    # List of strings
+    leader_emails = serializers.ListSerializer(
+        child=serializers.EmailField(), write_only=True
+    )
 
     class Meta:
         model = ProjectDescription
-        fields = "__all__"
+        fields = [
+            "name",
+            "description",
+            "image",
+            "hours_a_week",
+            "github",
+            "website",
+            "leader_emails",
+        ]

@@ -1,7 +1,8 @@
 from django.test import TestCase, Client
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 
-from team.models import Member, MemberApplication, MemberCategory
+from team.models import Member, MemberApplication, MemberCategory, ProjectDescription
 
 # Create your tests here.
 base = "/api/"
@@ -363,3 +364,48 @@ class SQLInjectionTestCase(TestCase):
         self.assertEqual(application.about, sql_injection_payload)
         # Verifying that the database integrity is maintained
         self.assertTrue(MemberApplication.objects.exists())
+
+
+class ProjectDescriptionTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}projects/descriptions/"
+        # Create some MemberCategory objects for testing
+        styret_category = MemberCategory.objects.create(title="Styret")
+        another_category = MemberCategory.objects.create(title="Another Category")
+
+        # Create some Member objects for testing
+        self.alice = Member.objects.create(
+            name="Alice",
+            order=1,
+            email="Alice@domain.com",
+            title="CEO",
+        )
+        self.alice.category.set([styret_category])
+
+        self.bob = Member.objects.create(
+            name="Bob",
+            order=2,
+            email="Bob@domain.com",
+            title="CTO",
+        )
+        self.bob.category.set([another_category])
+
+    def test_add_valid_project_description(self):
+        valid_payload = {
+            "name": "Project Name",
+            "description": "Project Description",
+            "hours_a_week": 10,
+            "leader_emails": [self.alice.email, self.bob.email],
+        }
+
+        print(valid_payload, flush=True)
+
+        response = self.client.post(self.url, valid_payload, format="json")
+        print(*response, flush=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_project_description(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
