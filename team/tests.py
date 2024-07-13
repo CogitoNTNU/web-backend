@@ -1,3 +1,4 @@
+from django.core import mail
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -57,9 +58,6 @@ class GetMembersTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content.decode(), "[]")
-
-
-from django.core import mail
 
 
 class ApplyTestCase(TestCase):
