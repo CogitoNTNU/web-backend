@@ -1,3 +1,6 @@
+import tempfile
+from PIL import Image
+
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -331,6 +334,65 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
+
+
+class UpdateMemberImageViewTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}member/image"
+        self.member1 = Member.objects.create(
+            name="John_Doe", order=1, email="johndoe@cogito-ntnu.no", title="CEO"
+        )
+        self.member2 = Member.objects.create(
+            name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
+        )
+
+    def _create_temp_image(self):
+        image = Image.new("RGB", (100, 100))
+        temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+        image.save(temp_file, "JPEG")
+        temp_file.seek(0)
+        return temp_file
+
+    def test_update_member_images_success(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = "John_Doe.jpg"
+
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = "Jane_Smith.jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 2)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
+    def test_update_member_images_partial_success(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = "John_Doe.jpg"
+
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = "Non_Existent.jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 1)
+
+    def test_update_member_images_invalid_request(self):
+        response = self.client.post(self.url, {}, format="multipart")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class SQLInjectionTestCase(TestCase):
