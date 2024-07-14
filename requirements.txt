@@ -28,4 +28,5 @@ requests==2.31.0
 simplejson==3.19.2
 urllib3==2.1.0
 drf-yasg==1.21.7
+python-dotenv==1.0.0
 inflection==0.5.1
