@@ -1,10 +1,14 @@
 # Cogito-Website Backend
 
-Backend for [Cogito-NTNU](https://cogito-ntnu.no)
+<div align="center">
 
 ![GitHub Django Workflow](https://img.shields.io/github/actions/workflow/status/CogitoNTNU/web-backend/django.yml)
----
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+</div>
+
+
+Backend for [Cogito-NTNU](https://cogito-ntnu.no)
 The backend is running on an aws ec2 server. To actually update the backend you need access to it.
 If any changes are wished upon, contact Simon Sandvik Lee on Slack.
 
@@ -20,48 +24,42 @@ For ease of use and version management control, we use Docker to keep track of o
 
 Our project uses docker to run the PostgreSQL server (database) and the Django Server.
 
-#### Download Docker
 
-To use docker, download docker engine [here](https://www.docker.com/get-started/)
+## Quick Start
+### Prerequisites
+- Ensure that git is installed on your machine. [Download Git](https://git-scm.com/downloads)
+- Docker is used for the backend and database setup. [Download Docker](https://www.docker.com/products/docker-desktop)
 
-#### How to run the Backend
-
-To run the backend write the following commands in the terminal
-
-To build the project:
-
-```bash
-docker-compose build
-```
-
-To run the project:
+### Configuration
+Create a `.env` file in the root directory of the project and add the following environment variables:
 
 ```bash
-docker-compose up
+DJANGO_SECRET_KEY = 'YOUR_SECRET_KEY'
+EMAIL_HOST_USER = "YOUR_EMAIL"
+EMAIL_HOST_PASSWORD  = "YOUR_EMAIL_PASSWORD"
 ```
 
-#### Migrate the DB
-
-To migrate django to the database
+Optionally, you can add the following environment variables to customize the project:
 
 ```bash
-docker-compose run cogito python manage.py migrate
+DEBUG = True
+LOG_LEVEL = 'DEBUG' # DEBUG, INFO, WARNING, ERROR, CRITICAL
 ```
 
-#### Create superuser
 
-To log into the django database, create a superuser
+## Usage
+To run the project, execute the following command in the root directory:
 
 ```bash
-docker-compose run cogito python manage.py createsuperuser
+docker compose up --build
 ```
 
-And follow the steps it gives you.
 
-#### Finish!
+Once the project is running, you can access the Django admin panel at the [admin page](http://127.0.0.1:8000/admin/)
 
-Now you can access the django server through
 
-```bash
-http://127.0.0.1:8000/admin/
-```
+To see the endpoint documentation, visit the [OpenAPI/Swagger page](http://127.0.0.1:8000/swagger/)
+
+## 📖 Documentation
+- [Docker](docs/manuals/docker.md)
+- [Deployment](docs/deployment/connect_to_EC2.md)
