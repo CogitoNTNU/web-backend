@@ -1,6 +1,7 @@
 import tempfile
 from PIL import Image
 
+from django.core import mail
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -76,6 +77,16 @@ class ApplyTestCase(TestCase):
         }
         self.amount_of_applications_before_test = MemberApplication.objects.count()
 
+    def test_sending_of_email(self):
+        response = self.client.post(self.url, self.valid_payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], "Application sent in successfully")
+
+        # Check that an email was sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Application Received by Cogito NTNU", mail.outbox[0].subject)
+        self.assertIn(f"Dear John Doe,", mail.outbox[0].body)
+
     def test_apply_invalid_email(self):
         invalid_payload = self.valid_payload.copy()
         invalid_payload["email"] = "invalid-email"
@@ -89,6 +100,9 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test,
         )
+
+        # Check that an email was not sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_invalid_missing_email_payload(self):
         invalid_payload = self.valid_payload.copy()
