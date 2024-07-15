@@ -2,6 +2,7 @@ import tempfile
 from PIL import Image
 
 from django.core import mail
+from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -355,6 +356,10 @@ class UpdateMemberImageViewTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = f"{base}member/image"
+        self.authenticated_user = User.objects.create_user(
+            username="testuser", password="testpass"
+        )
+
         self.member1 = Member.objects.create(
             name="John_Doe", order=1, email="johndoe@cogito-ntnu.no", title="CEO"
         )
@@ -376,6 +381,7 @@ class UpdateMemberImageViewTests(TestCase):
         temp_image2 = self._create_temp_image()
         temp_image2.name = self.member2.name + ".jpg"
 
+        self.client.login(username="testuser", password="testpass")
         response = self.client.post(
             self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
         )
@@ -393,6 +399,7 @@ class UpdateMemberImageViewTests(TestCase):
         temp_image2 = self._create_temp_image()
         temp_image2.name = "Non_Existent.jpg"
 
+        self.client.login(username="testuser", password="testpass")
         response = self.client.post(
             self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
         )
@@ -407,6 +414,7 @@ class UpdateMemberImageViewTests(TestCase):
         temp_image1 = self._create_temp_image()
         temp_image1.name = self.member1.name + ".jpg"
 
+        self.client.login(username="testuser", password="testpass")
         response = self.client.post(
             self.url, {"images": [temp_image1]}, format="multipart"
         )
@@ -431,9 +439,20 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(len(response.data["members_not_found"]), 0)
 
     def test_update_member_images_invalid_request(self):
+        self.client.login(username="testuser", password="testpass")
         response = self.client.post(self.url, {}, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_member_images_unauthenticated(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = self.member1.name + ".jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image1]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class SQLInjectionTestCase(TestCase):
