@@ -16,6 +16,10 @@ class FindMemberSerializer(serializers.Serializer):
     member_type = serializers.CharField(help_text="The category of the member")
 
 
+class MemberImageUploadSerializer(serializers.Serializer):
+    images = serializers.ListField(child=serializers.ImageField())
+
+
 class MemberApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MemberApplication

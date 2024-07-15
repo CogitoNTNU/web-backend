@@ -6,11 +6,14 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
+from rest_framework.views import APIView
 from .models import Member, MemberApplication, ProjectDescription
 from .serializers import (
+    MemberImageUploadSerializer,
     MemberSerializer,
     FindMemberSerializer,
     MemberApplicationSerializer,
@@ -58,6 +61,60 @@ def get_members(request) -> JsonResponse:
     except Exception as e:
         response = {"error": e}
         return Response(data=response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateMemberImageView(APIView):
+    serializer_class = MemberImageUploadSerializer
+    parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
+
+    image_param = openapi.Parameter(
+        "images",
+        openapi.IN_FORM,
+        description="Application files",
+        type=openapi.TYPE_ARRAY,
+        items=openapi.Items(type=openapi.TYPE_FILE),
+        required=True,
+    )
+
+    @swagger_auto_schema(
+        operation_description="Update the image of a member",
+        tags=["Member Management"],
+        manual_parameters=[image_param],
+        responses={
+            200: openapi.Response(description="Files processed successfully"),
+            400: openapi.Response(description="Invalid request data"),
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = MemberImageUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            images = serializer.validated_data["images"]
+            updated_members = []
+            members_not_found = []
+
+            for image in images:
+                member_name, file_extension = image.name.rsplit(".", 1)
+
+                try:
+                    member = Member.objects.get(name=member_name)
+                    member.image = image
+                    member.save()
+                    updated_members.append(member)
+                except Member.DoesNotExist:
+                    members_not_found.append(member_name)
+                    continue
+
+            response = {
+                "updated_members": MemberSerializer(updated_members, many=True).data,
+                "members_not_found": members_not_found,
+            }
+            return Response(
+                response,
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Apply
