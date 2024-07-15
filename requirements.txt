@@ -12,7 +12,7 @@ sqlparse==0.4.4
 typing_extensions==4.9.0
 tzdata==2023.4
 uritemplate==4.1.1
-Pillow==10.0.0
+Pillow==10.4.0
 certifi==2023.11.17
 charset-normalizer==3.3.2
 coreapi==2.3.3
