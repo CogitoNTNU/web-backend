@@ -66,6 +66,7 @@ def get_members(request) -> JsonResponse:
 class UpdateMemberImageView(APIView):
     serializer_class = MemberImageUploadSerializer
     parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
 
     image_param = openapi.Parameter(
         "images",
