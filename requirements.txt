@@ -1,4 +1,4 @@
-asgiref==3.7.2
+asgiref==3.8.1
 Django==5.0.1
 django-cors-headers==4.3.1
 django-rest-framework==0.1.0
