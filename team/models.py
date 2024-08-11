@@ -53,6 +53,11 @@ class MemberApplication(models.Model):
         auto_now_add=True,  # Use auto_now_add for the creation timestamp
         help_text="The date and time the application was sent",
     )
+    projects_to_join = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of projects the applicant wants to join, in order of preference",
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
