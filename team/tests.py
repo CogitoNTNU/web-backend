@@ -1,3 +1,4 @@
+import json
 import tempfile
 from PIL import Image
 
@@ -349,6 +350,23 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
+
+    def test_valid_application_with_projects_to_join(self):
+        payload = self.valid_payload.copy()
+        projects_to_join = ["Project 1", "Project 2", "Project 3"]
+        payload["projects_to_join"] = json.dumps(projects_to_join)
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+        # Check that the member has the projects_to_join field set
+        application = MemberApplication.objects.get(email=self.valid_payload["email"])
+        self.assertEqual(application.projects_to_join, projects_to_join)
 
 
 class UpdateMemberImageViewTests(TestCase):
