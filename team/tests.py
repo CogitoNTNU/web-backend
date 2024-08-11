@@ -375,7 +375,7 @@ class ApplyTestCase(TestCase):
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Check that the application was created in the database
+        # Check that the application was not created in the database
         self.assertTrue(
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test,
