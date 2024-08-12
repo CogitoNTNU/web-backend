@@ -1,4 +1,9 @@
+import json
+import tempfile
+from PIL import Image
+
 from django.core import mail
+from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from rest_framework import status
 
@@ -345,6 +350,140 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
+
+    def test_valid_application_with_projects_to_join(self):
+        payload = self.valid_payload.copy()
+        projects_to_join = ["Project 1", "Project 2", "Project 3"]
+        payload["projects_to_join"] = json.dumps(projects_to_join)
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check that the application was created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test + 1,
+        )
+
+        # Check that the member has the projects_to_join field set
+        application = MemberApplication.objects.get(email=self.valid_payload["email"])
+        self.assertEqual(application.projects_to_join, projects_to_join)
+
+    def test_invalid_application_with_projects_to_join(self):
+        payload = self.valid_payload.copy()
+        projects_to_join = "Project 1, Project 2, Project 3"
+        payload["projects_to_join"] = json.dumps(projects_to_join)
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check that the application was not created in the database
+        self.assertTrue(
+            MemberApplication.objects.count(),
+            self.amount_of_applications_before_test,
+        )
+
+
+class UpdateMemberImageViewTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}member/image"
+        self.authenticated_user = User.objects.create_user(
+            username="testuser", password="testpass"
+        )
+
+        self.member1 = Member.objects.create(
+            name="John_Doe", order=1, email="johndoe@cogito-ntnu.no", title="CEO"
+        )
+        self.member2 = Member.objects.create(
+            name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
+        )
+
+    def _create_temp_image(self):
+        image = Image.new("RGB", (100, 100))
+        temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+        image.save(temp_file, "JPEG")
+        temp_file.seek(0)
+        return temp_file
+
+    def test_update_member_images_success(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = self.member1.name + ".jpg"
+
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = self.member2.name + ".jpg"
+
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.post(
+            self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 2)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
+    def test_update_member_images_partial_success(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = self.member1.name + ".jpg"
+
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = "Non_Existent.jpg"
+
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.post(
+            self.url, {"images": [temp_image1, temp_image2]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 1)
+
+    def test_update_member_who_has_image(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = self.member1.name + ".jpg"
+
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.post(
+            self.url, {"images": [temp_image1]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
+        # Update the image of the same member
+        temp_image2 = self._create_temp_image()
+        temp_image2.name = self.member1.name + ".jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image2]}, format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("updated_members", response.data)
+        self.assertIn("members_not_found", response.data)
+        self.assertEqual(len(response.data["updated_members"]), 1)
+        self.assertEqual(len(response.data["members_not_found"]), 0)
+
+    def test_update_member_images_invalid_request(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.post(self.url, {}, format="multipart")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_member_images_unauthenticated(self):
+        temp_image1 = self._create_temp_image()
+        temp_image1.name = self.member1.name + ".jpg"
+
+        response = self.client.post(
+            self.url, {"images": [temp_image1]}, format="multipart"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class SQLInjectionTestCase(TestCase):
