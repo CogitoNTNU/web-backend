@@ -197,82 +197,39 @@ def get_applications(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Get Projects
-project_success_response = openapi.Response(
-    description="Get all projects",
-    examples={
-        "application/json": [
-            {
-                "name": "Project Name",
-                "description": "Project Description",
-                "image": "Image",
-                "github": "GitHub",
-                "website": "Website",
-            }
-        ]
-    },
-)
+class ProjectView(APIView):
+    permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="Get all project descriptions",
+        tags=["Project Management"],
+        responses={200: ProjectDescriptionSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        projects = ProjectDescription.objects.all()
+        serializer = ProjectDescriptionSerializer(projects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-@swagger_auto_schema(
-    method="GET",
-    operation_description="Get all projects",
-    tags=["Project Management"],
-    response_description="Returns all projects",
-    response={200: project_success_response},
-)
-@api_view(["GET"])
-def get_projects_descriptions(request):
-    """Returns all projects"""
-    projects = ProjectDescription.objects.all()
-    serializer = ProjectDescriptionSerializer(projects, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# Add Project
-project_success_response = openapi.Response(
-    description="Add a project",
-    examples={
-        "application/json": {
-            "message": "Project added successfully",
-        }
-    },
-)
-project_error_response = openapi.Response(
-    description="The project was not added due to missing fields or invalid data",
-    examples={"application/json": {"error": "Missing fields"}},
-)
-
-
-@swagger_auto_schema(
-    method="POST",
-    operation_description="Add a project description",
-    tags=["Project Management"],
-    response_description="Returns a message confirming that the project has been added.",
-    responses={200: project_success_response, 400: project_error_response},
-)
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def add_project_description(request):
-    """Add a project"""
-    serializer = ProjectDescriptionSerializer(data=request.data)
-    if serializer.is_valid():
-        # Check if the leaders are valid members
-        leader_emails = request.data.get("leaders", [])
-        for email in leader_emails:
-            if not Member.objects.filter(email=email).exists():
-                message = {
-                    "error": f"Invalid leader member, member {email} does not exist"
-                }
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-        project = serializer.save()
-
-        # Associate leaders
-        for email in leader_emails:
-            leader = Member.objects.get(email=email)
-            project.leaders.add(leader)
-        message = {"message": "Project description added successfully"}
-        return Response(message, status=status.HTTP_200_OK)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @swagger_auto_schema(
+        operation_description="Add a project description",
+        tags=["Project Management"],
+        request_body=ProjectDescriptionSerializer,
+        responses={
+            200: openapi.Response(description="Project description added successfully"),
+            400: openapi.Response(description="Invalid request data"),
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        """Add a project"""
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        serializer = ProjectDescriptionSerializer(data=request.data)
+        if serializer.is_valid():
+            project: ProjectDescription = serializer.save()
+            message = {"message": f"The project {project.name} added successfully"}
+            return Response(message, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

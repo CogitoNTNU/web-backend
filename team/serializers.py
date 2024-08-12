@@ -31,8 +31,33 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
 
 
 class ProjectDescriptionSerializer(serializers.ModelSerializer):
-    leaders = MemberSerializer(many=True, read_only=True)
+    leaders = serializers.ListField(
+        child=serializers.EmailField(),
+        write_only=True,  # This field is only for input, not part of the output
+    )
 
     class Meta:
         model = ProjectDescription
         fields = "__all__"
+
+    def create(self, validated_data):
+        # Extract leaders emails
+        leader_emails = validated_data.pop("leaders", [])
+
+        # Create the project
+        project = ProjectDescription.objects.create(**validated_data)
+
+        # Query the Member objects and add them to the project's leaders
+        leaders = Member.objects.filter(email__in=leader_emails)
+        project.leaders.set(leaders)
+
+        return project
+
+    def to_representation(self, instance):
+        """Convert the model instance to the expected output format."""
+        representation = super().to_representation(instance)
+        # Add leader emails in the representation
+        representation["leaders"] = list(
+            instance.leaders.values_list("email", flat=True)
+        )
+        return representation

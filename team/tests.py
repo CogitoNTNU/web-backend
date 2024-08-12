@@ -1,3 +1,4 @@
+from io import BytesIO
 import json
 import tempfile
 from PIL import Image
@@ -7,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from rest_framework import status
 
-from team.models import Member, MemberApplication, MemberCategory
+from team.models import Member, MemberApplication, MemberCategory, ProjectDescription
 
 # Create your tests here.
 base = "/api/"
@@ -382,6 +383,14 @@ class ApplyTestCase(TestCase):
         )
 
 
+def _create_temp_image():
+    image = Image.new("RGB", (100, 100))
+    temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
+    image.save(temp_file, "JPEG")
+    temp_file.seek(0)
+    return temp_file
+
+
 class UpdateMemberImageViewTests(TestCase):
 
     def setUp(self):
@@ -398,18 +407,11 @@ class UpdateMemberImageViewTests(TestCase):
             name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
         )
 
-    def _create_temp_image(self):
-        image = Image.new("RGB", (100, 100))
-        temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
-        image.save(temp_file, "JPEG")
-        temp_file.seek(0)
-        return temp_file
-
     def test_update_member_images_success(self):
-        temp_image1 = self._create_temp_image()
+        temp_image1 = _create_temp_image()
         temp_image1.name = self.member1.name + ".jpg"
 
-        temp_image2 = self._create_temp_image()
+        temp_image2 = _create_temp_image()
         temp_image2.name = self.member2.name + ".jpg"
 
         self.client.login(username="testuser", password="testpass")
@@ -424,10 +426,10 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(len(response.data["members_not_found"]), 0)
 
     def test_update_member_images_partial_success(self):
-        temp_image1 = self._create_temp_image()
+        temp_image1 = _create_temp_image()
         temp_image1.name = self.member1.name + ".jpg"
 
-        temp_image2 = self._create_temp_image()
+        temp_image2 = _create_temp_image()
         temp_image2.name = "Non_Existent.jpg"
 
         self.client.login(username="testuser", password="testpass")
@@ -442,7 +444,7 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(len(response.data["members_not_found"]), 1)
 
     def test_update_member_who_has_image(self):
-        temp_image1 = self._create_temp_image()
+        temp_image1 = _create_temp_image()
         temp_image1.name = self.member1.name + ".jpg"
 
         self.client.login(username="testuser", password="testpass")
@@ -457,7 +459,7 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(len(response.data["members_not_found"]), 0)
 
         # Update the image of the same member
-        temp_image2 = self._create_temp_image()
+        temp_image2 = _create_temp_image()
         temp_image2.name = self.member1.name + ".jpg"
 
         response = self.client.post(
@@ -476,7 +478,7 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_member_images_unauthenticated(self):
-        temp_image1 = self._create_temp_image()
+        temp_image1 = _create_temp_image()
         temp_image1.name = self.member1.name + ".jpg"
 
         response = self.client.post(
@@ -516,3 +518,73 @@ class SQLInjectionTestCase(TestCase):
         self.assertEqual(application.about, sql_injection_payload)
         # Verifying that the database integrity is maintained
         self.assertTrue(MemberApplication.objects.exists())
+
+
+class ProjectTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}projects/"
+
+        self.member1 = Member.objects.create(
+            name="John_Doe", order=1, email="johndoe@cogito-ntnu.no", title="CEO"
+        )
+        self.member2 = Member.objects.create(
+            name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
+        )
+
+        self.existing_project_1 = ProjectDescription.objects.create(
+            name="Project 1",
+            description="This is a project",
+            image="image.jpg",
+        )
+        self.existing_project_1.leaders.add(self.member1)
+        self.existing_project_1.leaders.add(self.member2)
+        self.existing_project_1.save()
+
+        self.existing_project_2 = ProjectDescription.objects.create(
+            name="Project 2",
+            description="This is another project",
+            image="image2.jpg",
+        )
+        self.existing_project_2.leaders.add(self.member1)
+        self.existing_project_2.save()
+
+    def test_get_all_projects(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(self.existing_project_1.name, response.content.decode())
+        self.assertIn(self.existing_project_2.name, response.content.decode())
+
+    def test_unauthorized_add_project(self):
+        payload = {
+            "name": "New Project",
+            "description": "This is a new project",
+            "image": _create_temp_image(),
+            "leaders": [self.member1.email],
+            "hours_a_week": 4,
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_authorized_add_project(self):
+        # Authenticate the user
+        User.objects.create_user(username="testuser", password="testpass")
+        login_success = self.client.login(username="testuser", password="testpass")
+        self.assertTrue(login_success)
+
+        payload = {
+            "name": "New Project",
+            "description": "This is a new project",
+            "image": _create_temp_image(),
+            "leaders": [self.member1.email],
+            "hours_a_week": 4,
+        }
+
+        response = self.client.post(self.url, payload, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            ProjectDescription.objects.filter(name=payload["name"]).exists()
+        )

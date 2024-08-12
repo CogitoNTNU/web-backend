@@ -64,12 +64,16 @@ class MemberApplication(models.Model):
 
 
 class ProjectDescription(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    image = models.ImageField(upload_to="images/")
+    name = models.CharField(max_length=100, help_text="Name of the project")
+    description = models.TextField(help_text="Description of the project")
+    image = models.ImageField(
+        upload_to="images/", blank=True, help_text="The logo of the project"
+    )
     # Add leader members using ManyToManyField, referencing 'email' field of Member
-    leaders = models.ManyToManyField(Member)
-    hours_a_week = models.IntegerField()
+    leaders = models.ManyToManyField(Member, help_text="The leaders of the project")
+    hours_a_week = models.IntegerField(
+        default=4, help_text="The number of hours per week"
+    )
 
     def __str__(self) -> str:
         return self.name
