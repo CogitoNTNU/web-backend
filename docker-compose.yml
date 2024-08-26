@@ -22,7 +22,8 @@ services:
       - DATABASE_NAME=cogitodb
       - DATABASE_USER=cogitouser
       - DATABASE_PASSWORD=cogitopassword
-
+    restart: allways
+    
   db:
     image: postgres:13
     volumes:
@@ -31,6 +32,7 @@ services:
       - POSTGRES_DB=cogitodb
       - POSTGRES_USER=cogitouser
       - POSTGRES_PASSWORD=cogitopassword
+    restart: allways
 
 volumes:
   postgres_data:
