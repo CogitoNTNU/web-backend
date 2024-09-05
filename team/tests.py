@@ -1,15 +1,19 @@
+import os
 import json
 import tempfile
 from PIL import Image
 
 from django.core import mail
+from django.core.files.storage import default_storage
+from django.core.management import call_command, CommandError
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from rest_framework import status
 
+
 from team.models import Member, MemberApplication, MemberCategory
 
-# Create your tests here.
+
 base = "/api/"
 
 
@@ -398,6 +402,12 @@ class UpdateMemberImageViewTests(TestCase):
             name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
         )
 
+    def tearDown(self):
+        # Clean up uploaded images after each test
+        for member in Member.objects.all():
+            if member.image and default_storage.exists(member.image.path):
+                default_storage.delete(member.image.path)
+
     def _create_temp_image(self):
         image = Image.new("RGB", (100, 100))
         temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
@@ -502,6 +512,61 @@ class MemberCategoryViewTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+
+
+class ImportDataCommandTest(TestCase):
+
+    def setUp(self):
+        # Create a temp file for JSON data
+        self.file_path = "test.json"
+
+    def tearDown(self):
+        # Clean up by removing the file after each test
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
+
+    def test_import_member_categories(self):
+        json_data = [{"title": "Management"}, {"title": "Leadership"}]
+
+        # Write the JSON data to a file
+        with open(self.file_path, "w") as file:
+            json.dump(json_data, file)
+
+        self.assertEqual(MemberCategory.objects.count(), 0)
+        # Simulate calling the command
+        call_command("data_importer", "import_member_categories", self.file_path)
+
+        # Check the output and model updates
+        self.assertEqual(MemberCategory.objects.count(), 2)
+
+    def test_import_members(self):
+        json_data = [
+            {
+                "order": 1,
+                "name": "John Doe",
+                "title": "CEO",
+                "email": "john.doe@example.com",
+                "github": "https://github.com/johndoe",
+                "linkedIn": "https://www.linkedin.com/in/johndoe",
+                "image": "/media/images/john.jpg",
+                "category": ["Management", "Leadership"],
+            }
+        ]
+
+        # Write the JSON data to a file
+        with open(self.file_path, "w") as file:
+            json.dump(json_data, file)
+
+        self.assertEqual(Member.objects.count(), 0)
+        # Simulate calling the command
+        call_command("data_importer", "import_members", self.file_path)
+
+        # Check the output and model updates
+        self.assertEqual(Member.objects.count(), 1)
+
+    def test_invalid_subcommand(self):
+        with self.assertRaises(CommandError):
+            call_command("data_importer", "invalid_subcommand", self.file_path)
 
 
 class SQLInjectionTestCase(TestCase):

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     # Applications
     "team",
     "api",
+    "cogito",
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 
