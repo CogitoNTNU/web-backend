@@ -11,8 +11,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Member, MemberApplication, ProjectDescription
+from .models import Member, MemberApplication, MemberCategory, ProjectDescription
 from .serializers import (
+    MemberCategorySerializer,
     MemberImageUploadSerializer,
     MemberSerializer,
     FindMemberSerializer,
@@ -61,6 +62,13 @@ def get_members(request) -> JsonResponse:
     except Exception as e:
         response = {"error": e}
         return Response(data=response, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MemberCategoryView(APIView):
+    def get(self, request):
+        categories = MemberCategory.objects.all()
+        serializer = MemberCategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UpdateMemberImageView(APIView):

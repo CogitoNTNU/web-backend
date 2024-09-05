@@ -30,11 +30,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DEBUG", False)
 
 ALLOWED_HOSTS = [
-    "16.171.144.138",
-    "16.171.88.123",
-    "172.31.36.47",
-    "99.83.232.174",
-    "51.20.186.38",
+    "backend.cogito-ntnu.no",
     "www.cogito-backend.net",
     "cogito-backend.net",
     "127.0.0.1",
