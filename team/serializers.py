@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Member, MemberApplication, ProjectDescription
+from .models import Member, MemberApplication, MemberCategory, ProjectDescription
 
 # Write your serializers here
 
@@ -28,6 +28,12 @@ class MemberApplicationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Django automatically adds the current date and time for the date_of_application field
         return MemberApplication.objects.create(**validated_data)
+
+
+class MemberCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MemberCategory
+        fields = "__all__"
 
 
 class ProjectDescriptionSerializer(serializers.ModelSerializer):
