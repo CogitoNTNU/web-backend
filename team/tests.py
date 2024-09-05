@@ -486,6 +486,24 @@ class UpdateMemberImageViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
+class MemberCategoryViewTests(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.url = f"{base}member/category"
+        self.authenticated_user = User.objects.create_user(
+            username="testuser", password="testpass"
+        )
+
+    def test_get_member_categories(self):
+        self.category1 = MemberCategory.objects.create(title="Styret")
+        self.category2 = MemberCategory.objects.create(title="Another Category")
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+
+
 class SQLInjectionTestCase(TestCase):
     def setUp(self):
         self.client = Client()
