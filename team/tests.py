@@ -1,15 +1,19 @@
+import os
 import json
 import tempfile
 from PIL import Image
 
 from django.core import mail
+from django.core.files.storage import default_storage
+from django.core.management import call_command, CommandError
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from rest_framework import status
 
+
 from team.models import Member, MemberApplication, MemberCategory
 
-# Create your tests here.
+
 base = "/api/"
 
 
@@ -398,6 +402,12 @@ class UpdateMemberImageViewTests(TestCase):
             name="Jane_Smith", order=2, email="janesmith@cogito-ntnu.no", title="CTO"
         )
 
+    def tearDown(self):
+        # Clean up uploaded images after each test
+        for member in Member.objects.all():
+            if member.image and default_storage.exists(member.image.path):
+                default_storage.delete(member.image.path)
+
     def _create_temp_image(self):
         image = Image.new("RGB", (100, 100))
         temp_file = tempfile.NamedTemporaryFile(suffix=".jpg")
@@ -502,13 +512,6 @@ class MemberCategoryViewTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
-
-
-import json
-import os
-from django.core.management import call_command, CommandError
-from django.test import TestCase
-from team.models import MemberCategory, Member
 
 
 class ImportDataCommandTest(TestCase):
