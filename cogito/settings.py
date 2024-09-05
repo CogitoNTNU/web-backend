@@ -27,7 +27,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", False)
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "backend.cogito-ntnu.no",
@@ -89,7 +89,21 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "cogito.wsgi.application"
+# HTTPS settings applied only in production
+if not DEBUG:
+    print("Running in production mode", flush=True)
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+else:
+    # Development-only settings
+    # Disable secure headers and redirections
+    print("Running in development mode", flush=True)
+    SECURE_PROXY_SSL_HEADER = None
+    SECURE_SSL_REDIRECT = False
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
