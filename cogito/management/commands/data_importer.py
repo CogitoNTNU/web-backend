@@ -31,13 +31,10 @@ class Command(BaseCommand):
         else:
             raise CommandError(f"Unknown subcommand: {subcommand}")
 
-    def import_members(self, json_file):
+    def import_members(self, json_file: str):
         try:
-            if isinstance(json_file, str):  # If it's a string, treat it as a file path
-                with open(json_file, "r") as file:
-                    data = json.load(file)
-            else:
-                data = json.load(json_file)
+            with open(json_file, "r") as file:
+                data = json.load(file)
         except FileNotFoundError:
             raise CommandError(f"File {json_file} does not exist.")
 
@@ -62,14 +59,13 @@ class Command(BaseCommand):
             ) in categories:  # Use 'category_title' since the field is 'title'
                 category, _ = MemberCategory.objects.get_or_create(title=category_title)
                 member.category.add(category)
-            print(f"Processed member {member.name}", flush=True)
+                self.stdout.write(self.style.SUCCESS(f"Processed member {member.name}"))
 
-        print("Import completed", flush=True)
         self.stdout.write(
             self.style.SUCCESS(f"Successfully imported members from {json_file}")
         )
 
-    def import_member_categories(self, json_file):
+    def import_member_categories(self, json_file: str):
         try:
             with open(json_file, "r") as file:
                 data = json.load(file)
@@ -88,7 +84,7 @@ class Command(BaseCommand):
             self.style.SUCCESS(f"Successfully imported categories from {json_file}")
         )
 
-    def import_member_applications(self, json_file):
+    def import_member_applications(self, json_file: str):
         try:
             with open(json_file, "r") as file:
                 data = json.load(file)
@@ -116,7 +112,7 @@ class Command(BaseCommand):
             self.style.SUCCESS(f"Successfully imported applications from {json_file}")
         )
 
-    def import_project_descriptions(self, json_file):
+    def import_project_descriptions(self, json_file: str):
         try:
             with open(json_file, "r") as file:
                 data = json.load(file)
