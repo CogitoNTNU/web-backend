@@ -504,6 +504,68 @@ class MemberCategoryViewTests(TestCase):
         self.assertEqual(len(response.data), 2)
 
 
+import json
+import os
+from django.core.management import call_command, CommandError
+from django.test import TestCase
+from team.models import MemberCategory, Member
+
+
+class ImportDataCommandTest(TestCase):
+
+    def setUp(self):
+        # Create a temp file for JSON data
+        self.file_path = "test.json"
+
+    def tearDown(self):
+        # Clean up by removing the file after each test
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
+
+    def test_import_member_categories(self):
+        json_data = [{"title": "Management"}, {"title": "Leadership"}]
+
+        # Write the JSON data to a file
+        with open(self.file_path, "w") as file:
+            json.dump(json_data, file)
+
+        self.assertEqual(MemberCategory.objects.count(), 0)
+        # Simulate calling the command
+        call_command("data_importer", "import_member_categories", self.file_path)
+
+        # Check the output and model updates
+        self.assertEqual(MemberCategory.objects.count(), 2)
+
+    def test_import_members(self):
+        json_data = [
+            {
+                "order": 1,
+                "name": "John Doe",
+                "title": "CEO",
+                "email": "john.doe@example.com",
+                "github": "https://github.com/johndoe",
+                "linkedIn": "https://www.linkedin.com/in/johndoe",
+                "image": "/media/images/john.jpg",
+                "category": ["Management", "Leadership"],
+            }
+        ]
+
+        # Write the JSON data to a file
+        with open(self.file_path, "w") as file:
+            json.dump(json_data, file)
+
+        self.assertEqual(Member.objects.count(), 0)
+        # Simulate calling the command
+        call_command("data_importer", "import_members", self.file_path)
+
+        # Check the output and model updates
+        self.assertEqual(Member.objects.count(), 1)
+
+    def test_invalid_subcommand(self):
+        with self.assertRaises(CommandError):
+            call_command("data_importer", "invalid_subcommand", self.file_path)
+
+
 class SQLInjectionTestCase(TestCase):
     def setUp(self):
         self.client = Client()
