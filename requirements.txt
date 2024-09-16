@@ -18,7 +18,7 @@ charset-normalizer==3.3.2
 coreapi==2.3.3
 coreschema==0.0.4
 django-rest-swagger==2.2.0
-idna==3.6
+idna==3.10
 itypes==1.2.0
 Jinja2==3.1.2
 MarkupSafe==2.1.3
