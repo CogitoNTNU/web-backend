@@ -36,5 +36,5 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           login ghcr.io -u $PAT_GITHUB_USERNAME -p $PERSONAL_ACCESS_TOKEN
-          docker build -t CogitoNTNU/cogito-backend .
-          docker push CogitoNTNU/cogito-backend:latest
+          docker build -t cogitontnu/cogito-backend .
+          docker push cogitontnu/cogito-backend:latest
