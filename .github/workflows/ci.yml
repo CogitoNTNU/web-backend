@@ -42,5 +42,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and Push Docker Backend Image
         run: |
-          docker build -t ghcr.io/cogitontnu/web-backend:latest -f ./Dockerfile .
+          docker build -t ghcr.io/cogitontnu/web-backend:latest . -f Dockerfile
           docker push ghcr.io/cogitontnu/web-backend:latest
