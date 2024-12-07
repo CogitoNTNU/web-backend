@@ -40,11 +40,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract short SHA
-        id: git_sha
-        run: echo "GIT_SHA=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
       - name: Build and Push Docker Backend Image
         run: |
-          docker build -t ghcr.io/cogitontnu/web-backend:${{ env.GIT_SHA }} .
-          docker push ghcr.io/cogitontnu/web-backend:${{ env.GIT_SHA }}
-    
+          docker build -t ghcr.io/cogitontnu/web-backend:latest .
+          docker push ghcr.io/cogitontnu/web-backend:latest
