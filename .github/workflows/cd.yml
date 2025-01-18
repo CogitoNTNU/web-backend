@@ -19,6 +19,10 @@ jobs:
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
           echo "LOG_LEVEL=${{ secrets.LOG_LEVEL }}" >> .env
           echo "DEBUG=True" >> .env
+      - name: Print .env file
+        run: cat .env
+      - name: Print environment variables
+        run: printenv
       - name: Run Docker Container
         run: |
           sudo docker compose up -d --build
