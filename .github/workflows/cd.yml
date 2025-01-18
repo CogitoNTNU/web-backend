@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: CogitoRunner
+    runs-on: self-hosted
     steps:
       - name: Create .env file
         run: |
