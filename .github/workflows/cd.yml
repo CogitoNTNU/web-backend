@@ -12,8 +12,7 @@ jobs:
     steps:
       - name: Create .env file
         run: |
-          echo "${{ secrets.DJANGO_SECRET_KEY }}" > .env
-          echo "${{ secrets.EMAIL_HOST_USER }}" >> .env
+          echo "${{ secrets.EMAIL_HOST_USER }}" > .env
           echo "${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
           echo "${{ secrets.LOG_LEVEL }}" >> .env
       - name: Run Docker Container
