@@ -17,5 +17,4 @@ jobs:
           echo "LOG_LEVEL=${{ secrets.LOG_LEVEL }}" >> .env
       - name: Run Docker Container
         run: |
-          sudo docker compose build
-          sudo docker compose up -d
+          sudo docker compose up -d --build
