@@ -18,6 +18,7 @@ jobs:
           echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" > .env
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
           echo "LOG_LEVEL=${{ secrets.LOG_LEVEL }}" >> .env
+          echo "DEBUG=True" >> .env
       - name: Run Docker Container
         run: |
           sudo docker compose up -d --build
