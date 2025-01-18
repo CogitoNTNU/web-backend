@@ -3,9 +3,11 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: "ghcr.io/cogitontnu/web-backend-image:latest"
+    command: gunicorn cogito.wsgi:application --bind 0.0.0.0:8000 --workers 1 --timeout 120
+    volumes:
+      - .:/code
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       - db
     environment:
