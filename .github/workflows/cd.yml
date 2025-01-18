@@ -10,6 +10,7 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v4
       - name: Create .env file
         run: |
           echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" > .env
