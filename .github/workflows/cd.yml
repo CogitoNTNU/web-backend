@@ -8,7 +8,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: CogitoRunner
+    runs-on:
+      group: OpenStack
+      labels: self-hosted
     steps:
       - uses: actions/checkout@v4
       - name: Create .env file
