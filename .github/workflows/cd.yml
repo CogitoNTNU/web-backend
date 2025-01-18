@@ -8,11 +8,14 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: CogitoRunner
     steps:
       - name: Create .env file
         run: |
-          echo ${{ secrets.DJANGO_SECRET_KEY }}\n${{ secrets.EMAIL_HOST_USER }}\n${{ secrets.EMAIL_HOST_PASSWORD }}\n${{ secrets.LOG_LEVEL }} > .env
+          echo "${{ secrets.DJANGO_SECRET_KEY }}" > .env
+          echo "${{ secrets.EMAIL_HOST_USER }}" >> .env
+          echo "${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+          echo "${{ secrets.LOG_LEVEL }}" >> .env
       - name: Run Docker Container
         run: |
           sudo docker-compose build
