@@ -8,12 +8,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: CogitoRunner
     steps:
-      - name: Pull Docker image
-        run: sudo docker pull CogitoNTNU/cogito-backend:latest
-      - name: Delete Old docker container
-        run: sudo docker rm -f cogito-backend || true
+      - name: Create .env file
+        run: |
+          echo ${{ secrets.DJANGO_SECRET_KEY }}\n${{ secrets.EMAIL_HOST_USER }}\n${{ secrets.EMAIL_HOST_PASSWORD }}\n${{ secrets.LOG_LEVEL }} > .env
       - name: Run Docker Container
         run: |
           sudo docker-compose build
