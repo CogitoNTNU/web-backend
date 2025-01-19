@@ -42,6 +42,10 @@ ALLOWED_HOSTS = [
 
 CORS_ALLOWED_ORIGINS = ["https://www.cogito-ntnu.no"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://backend.cogito-ntnu.no",
+]
+
 # Application definition
 
 INSTALLED_APPS = [
