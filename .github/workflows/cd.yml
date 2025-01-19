@@ -18,7 +18,6 @@ jobs:
           echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" > .env
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
           echo "LOG_LEVEL=${{ secrets.LOG_LEVEL || 'INFO' }}" >> .env
-          echo "DEBUG=True" >> .env
       - name: Print .env file
         run: cat .env
       - name: Print environment variables
