@@ -3,7 +3,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    command: gunicorn cogito.wsgi:application --bind 0.0.0.0:8000 --workers 1 --timeout 120
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
