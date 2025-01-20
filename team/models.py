@@ -93,6 +93,7 @@ class MemberApplication(models.Model):
     lead = models.BooleanField(
         default=False,
         blank=True,
+        null=True,
         help_text="Whether the applicant wants to be a project lead",
     )
 
