@@ -80,6 +80,7 @@ class ApplyTestCase(TestCase):
             "email": "johndoe@example.com",
             "phone_number": "1234567890",
             "about": "I am a developer, who loves AI",
+            "lead": True,
         }
         self.amount_of_applications_before_test = MemberApplication.objects.count()
 
