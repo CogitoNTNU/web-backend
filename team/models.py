@@ -96,6 +96,7 @@ class MemberApplication(models.Model):
         null=True,
         help_text="Whether the applicant wants to be a project lead",
     )
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
