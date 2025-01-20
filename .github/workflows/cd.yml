@@ -25,4 +25,6 @@ jobs:
         run: printenv
       - name: Run Docker Container
         run: |
-          sudo docker compose up -d --build
+          sudo docker compose build
+          sudo docker compose run cogito python manage.py migrate
+          sudo docker compose up -d
