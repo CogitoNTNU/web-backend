@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Member, MemberApplication, MemberCategory, ProjectDescription
+from .models import Member, MemberApplication, MemberCategory, Project
 
 # Write your serializers here
 
@@ -40,5 +40,5 @@ class ProjectDescriptionSerializer(serializers.ModelSerializer):
     leaders = MemberSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ProjectDescription
+        model = Project
         fields = "__all__"

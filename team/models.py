@@ -102,7 +102,7 @@ class MemberApplication(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class ProjectDescription(models.Model):
+class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to="images/")

@@ -1,6 +1,6 @@
 import json
 from django.core.management.base import BaseCommand, CommandError
-from team.models import MemberCategory, MemberApplication, ProjectDescription, Member
+from team.models import MemberCategory, MemberApplication, Project, Member
 
 
 class Command(BaseCommand):
@@ -120,7 +120,7 @@ class Command(BaseCommand):
             raise CommandError(f"File {json_file} does not exist.")
 
         for item in data:
-            project, created = ProjectDescription.objects.update_or_create(
+            project, created = Project.objects.update_or_create(
                 name=item["name"],
                 defaults={
                     "description": item["description"],

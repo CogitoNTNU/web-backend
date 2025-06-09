@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Member, MemberApplication, MemberCategory, ProjectDescription
+from .models import Member, MemberApplication, MemberCategory, Project
 from .serializers import (
     MemberCategorySerializer,
     MemberImageUploadSerializer,
@@ -232,7 +232,7 @@ project_success_response = openapi.Response(
 @api_view(["GET"])
 def get_projects_descriptions(request):
     """Returns all projects"""
-    projects = ProjectDescription.objects.all()
+    projects = Project.objects.all()
     serializer = ProjectDescriptionSerializer(projects, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
