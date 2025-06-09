@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +26,7 @@ load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
@@ -35,9 +37,14 @@ ALLOWED_HOSTS = [
     "cogito-backend.net",
     "127.0.0.1",
     "localhost",
+    "0.0.0.0"
 ]
 
 CORS_ALLOWED_ORIGINS = ["https://www.cogito-ntnu.no"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://backend.cogito-ntnu.no",
+]
 
 # Application definition
 

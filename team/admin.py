@@ -17,6 +17,7 @@ class MemberApplicationAdmin(admin.ModelAdmin):
         "about",
         "date_of_application",
         "projects_to_join",
+        "lead",
     ]
     # Fields that are read-only in the admin panel
     readonly_fields = [

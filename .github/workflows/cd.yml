@@ -8,13 +8,23 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on:
+      group: OpenStack
+      labels: self-hosted
     steps:
-      - name: Pull Docker image
-        run: sudo docker pull CogitoNTNU/cogito-backend:latest
-      - name: Delete Old docker container
-        run: sudo docker rm -f cogito-backend || true
+      - uses: actions/checkout@v4
+      - name: Create .env file
+        run: |
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" > .env
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
+          echo "LOG_LEVEL=${{ secrets.LOG_LEVEL || 'INFO' }}" >> .env
+          echo "DEBUG=True" >> .env
+      - name: Print .env file
+        run: cat .env
+      - name: Print environment variables
+        run: printenv
       - name: Run Docker Container
         run: |
-          sudo docker-compose build
-          sudo docker-compose up -d
+          sudo docker compose build
+          sudo docker compose run cogito python manage.py migrate
+          sudo docker compose up -d
