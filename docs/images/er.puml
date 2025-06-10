@@ -1,0 +1,43 @@
+@startuml
+skinparam linetype ortho
+hide circle
+
+entity "Member" as Member {
+  * order       : INT <<PK>>
+  --
+    name        : VARCHAR(30)
+    title       : VARCHAR(30)
+    image       : VARCHAR(255)
+    email       : VARCHAR(50)
+    github      : VARCHAR(255)
+    linkedIn    : VARCHAR(255)
+    createdAt   : TIMESTAMP
+    updatedAt   : TIMESTAMP
+}
+
+entity "Project" as Project {
+  * id           : INT <<PK>>
+  --
+    name          : VARCHAR(100)
+    description   : TEXT
+    logo          : VARCHAR(255)
+    hours_a_week  : FLOAT
+    github_link   : VARCHAR(255)
+    createdAt     : TIMESTAMP
+    updatedAt     : TIMESTAMP
+}
+
+entity "ProjectMember" as ProjectMember {
+  * project_id : INT  <<PK,FK>>  --→ Project.id
+  * member_id  : INT  <<PK,FK>>  --→ Member.order
+  * year       : INT  <<PK>>
+  * semester   : CHAR(2) <<PK>>  -- "SPING" / "FALL"
+  --
+    role       : VARCHAR(50)
+}
+
+' ────────────  Relationships  ────────────
+' One-to-many sides of the explicit through table
+Project          ||--o{ ProjectMember : has members
+Member           ||--o{ ProjectMember : contributes to
+@enduml
