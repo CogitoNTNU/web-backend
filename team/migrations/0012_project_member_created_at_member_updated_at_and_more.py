@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('year', models.PositiveSmallIntegerField(default=2025, validators=[django.core.validators.MinValueValidator(2000)])),
-                ('semester', models.CharField(choices=[('SP', 'Spring'), ('AU', 'Autumn')], default='AU', max_length=2)),
+                ('semester', models.CharField(choices=[('SP', 'Spring'), ('FA', 'Fall')], default='FA', max_length=2)),
                 ('role', models.CharField(max_length=50)),
                 ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_memberships', to='team.member')),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='roles', to='team.project')),
