@@ -59,7 +59,7 @@ class Command(BaseCommand):
             ) in categories:  # Use 'category_title' since the field is 'title'
                 category, _ = MemberCategory.objects.get_or_create(title=category_title)
                 member.category.add(category)
-                self.stdout.write(self.style.SUCCESS(f"Processed member {member.name}"))
+            self.stdout.write(self.style.SUCCESS(f"Processed member {member.name}"))
 
         self.stdout.write(
             self.style.SUCCESS(f"Successfully imported members from {json_file}")

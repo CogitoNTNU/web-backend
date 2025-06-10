@@ -63,3 +63,4 @@ To see the endpoint documentation, visit the [OpenAPI/Swagger page](http://127.0
 ## 📖 Documentation
 - [Docker](docs/manuals/docker.md)
 - [Deployment](docs/deployment/connect_to_EC2.md)
+- [Commands](docs/manuals/commands.md)
