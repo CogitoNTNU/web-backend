@@ -3,6 +3,9 @@ name: CI Pipeline
 on:
   push:
     branches: ["main", "development"]
+  
+  pull_request:
+    branches: ["main", "development"]
 
 jobs:
   build-and-test:
@@ -12,11 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
 
       - name: Build Docker image
         run: docker compose build
