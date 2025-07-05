@@ -31,7 +31,7 @@ entity "ProjectMember" as ProjectMember {
   * project_id : INT  <<PK,FK>>  --→ Project.id
   * member_id  : INT  <<PK,FK>>  --→ Member.order
   * year       : INT  <<PK>>
-  * semester   : CHAR(2) <<PK>>  -- "SPING" / "FALL"
+  * semester   : CHAR(2) <<PK>>  -- "SPRING" / "FALL"
   --
     role       : VARCHAR(50)
 }
