@@ -11,7 +11,14 @@ from django.test import TestCase, Client
 from rest_framework import status
 
 
-from team.models import Member, MemberApplication, MemberCategory
+from team.models import (
+    Member,
+    MemberApplication,
+    MemberCategory,
+    Project,
+    ProjectMember,
+    Semester,
+)
 
 
 base = "/api/"
@@ -67,6 +74,109 @@ class GetMembersTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content.decode(), "[]")
+
+
+class MemberWithProjectsTests(TestCase):
+    def setUp(self):
+        self.url = f"{base}members-by-type/"
+
+        self.cat_dev = MemberCategory.objects.create(title="Developer")
+        self.cat_ops = MemberCategory.objects.create(title="Operations")
+
+        self.alice = Member.objects.create(
+            order=1,
+            name="Alice",
+            title="Backend Dev",
+            email="alice@example.com",
+        )
+
+        self.bob = Member.objects.create(
+            order=2,
+            name="Bob",
+            title="SysAdmin",
+            email="bob@example.com",
+        )
+
+        self.charlie = Member.objects.create(
+            order=3,
+            name="Charlie",
+            title="Frontend Dev",
+            email="charlie@example.com",
+        )
+
+        # Create two projects
+        self.proj_web = Project.objects.create(
+            name="Web Development",
+            description="Build web application",
+            hours_a_week=10,
+        )
+        self.proj_game_ai = Project.objects.create(
+            name="Game AI",
+            description="Develop AI for games",
+            hours_a_week=8,
+        )
+
+        # Assign Alice to both projects, Bob to one and Charlie to none
+        ProjectMember.objects.create(
+            member=self.alice,
+            project=self.proj_web,
+            role="Backend Developer",
+            year=2021,
+            semester=Semester.SPRING,
+        )
+        ProjectMember.objects.create(
+            member=self.alice,
+            project=self.proj_web,
+            role="Frontend Developer",
+            year=2021,
+            semester=Semester.FALL,
+        )
+        ProjectMember.objects.create(
+            member=self.alice,
+            project=self.proj_game_ai,
+            role="Contributor",
+            year=2021,
+            semester=Semester.FALL,
+        )
+        ProjectMember.objects.create(
+            member=self.bob,
+            project=self.proj_game_ai,
+            role="Support",
+            year=2021,
+            semester=Semester.FALL,
+        )
+
+    def test_get_all_members_includes_projects(self):
+        """
+        GET /members/?member_type=Alle Medlemmer
+        should return both all members and their project memberships.
+        each member with a project should have a `project_memberships` list containing:
+          - project name
+          - role
+          - year
+          - semester
+        """
+        response = self.client.get(self.url, {"member_type": "Alle Medlemmer"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), Member.objects.count())
+
+        # Check Alice's data
+        alice_data = next((m for m in data if m["name"] == self.alice.name), None)
+        self.assertIn("project_memberships", alice_data)
+        self.assertEqual(
+            len(alice_data["project_memberships"]),
+            self.alice.project_memberships.count(),
+        )
+
+        for project_member in alice_data["project_memberships"]:
+            self.assertIn("project", project_member)
+            self.assertIn("name", project_member["project"])
+            self.assertIn("role", project_member)
+            self.assertIn("year", project_member)
+            self.assertIn("semester", project_member)
 
 
 class ApplyTestCase(TestCase):
