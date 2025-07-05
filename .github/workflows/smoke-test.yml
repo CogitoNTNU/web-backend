@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Ping API endpoint
         run: |
-          response=$(curl -o /dev/null -s -w "%{http_code}\n" http://www.cogito-backend.net/api/health-check/)
+          response=$(curl -o /dev/null -s -w "%{http_code}\n" https://backend.cogito-ntnu.no/api/health-check/)
           if [ "$response" -ne 200 ]; then
             echo "API response is not 200, actual response: $response"
             exit 1
