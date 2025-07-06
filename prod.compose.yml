@@ -32,7 +32,7 @@ services:
       - "traefik.http.routers.backend-secure.rule=Host(`backend.cogito-ntnu.no`)"
       - "traefik.http.routers.backend-secure.tls=true"
       - "traefik.http.routers.backend-secure.tls.certresolver=cloudflare"
-      - "traefik.http.routers.backend-secure.service=backend"
+      - "traefik.http.routers.backend-secure.service=cogito"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
 
 
