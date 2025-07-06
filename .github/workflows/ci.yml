@@ -26,6 +26,9 @@ jobs:
           docker compose run --rm cogito python manage.py makemigrations
           docker compose run --rm cogito python manage.py migrate
 
+      - name: Run pre-commit checks
+        run: docker compose run --rm -T cogito pre-commit run --all-files --color always --show-diff-on-failure
+
       - name: Run tests
         run: docker compose run --rm cogito python manage.py test
 
