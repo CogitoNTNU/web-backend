@@ -46,20 +46,6 @@ DEBUG = True
 LOG_LEVEL = 'DEBUG' # DEBUG, INFO, WARNING, ERROR, CRITICAL
 ```
 
-### Pre-commit Hooks 🚦
-
-We use pre-commit to enforce code style, linting and simple security checks before every commit.
-1. Install hooks once
-    ```bash
-    pip install --upgrade pre-commit
-    pre-commit install
-    ```
-
-2. Run on all files
-
-    ```bash
-    pre-commit run --all-files
-    ```
 
 ## Usage
 To run the project, execute the following command in the root directory:
@@ -76,5 +62,6 @@ To see the endpoint documentation, visit the [OpenAPI/Swagger page](http://127.0
 
 ## 📖 Documentation
 - [Docker](docs/manuals/docker.md)
+- [Database Backup and Restore](docs/manuals/database-backup-and-recovery.md)
 - [Deployment](docs/deployment/connect_to_EC2.md)
 - [Commands](docs/manuals/commands.md)
