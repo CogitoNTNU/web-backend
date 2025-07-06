@@ -22,8 +22,8 @@ jobs:
       
       - name: Run Docker Container
         run: |
+          docker compose -f prod.compose.yml build
           # Do database backup before deploying
           source scripts/backup-database.sh "${{ secrets.BLOB_CREDENTIALS }}"
-          docker compose -f prod.compose.yml build
           docker compose -f prod.compose.yml run cogito python manage.py migrate
           docker compose -f prod.compose.yml up -d
