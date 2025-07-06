@@ -4,7 +4,7 @@
 DUMP_FILE_NAME="$1"
 # Check if dump file is provided
 if [ -z "$DUMP_FILE_NAME" ]; then
-  echo "Usage: ./restore.sh name_of_dump_file.sql"
+  echo "Usage: ./restore-databse.sh name_of_dump_file.sql"
   exit 1
 fi
 
