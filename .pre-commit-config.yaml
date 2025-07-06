@@ -21,15 +21,6 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  - repo: local
-    hooks:
-      - id: django-check
-        name: Run Django Check
-        entry: docker compose run cogito python manage.py check
-        language: system
-        pass_filenames: false
-        types: [python]
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.2
     hooks:
