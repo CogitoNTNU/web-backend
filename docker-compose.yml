@@ -46,6 +46,8 @@ services:
       POSTGRES_USER: cogitouser
       POSTGRES_PASSWORD: cogitopassword
     restart: always
+    networks:
+      - proxy
 
 volumes:
   postgres_data:
