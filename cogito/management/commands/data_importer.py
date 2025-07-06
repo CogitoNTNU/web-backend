@@ -1,6 +1,6 @@
 import json
 from django.core.management.base import BaseCommand, CommandError
-from team.models import MemberCategory, MemberApplication, ProjectDescription, Member
+from team.models import MemberCategory, MemberApplication, Project, Member
 
 
 class Command(BaseCommand):
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             ) in categories:  # Use 'category_title' since the field is 'title'
                 category, _ = MemberCategory.objects.get_or_create(title=category_title)
                 member.category.add(category)
-                self.stdout.write(self.style.SUCCESS(f"Processed member {member.name}"))
+            self.stdout.write(self.style.SUCCESS(f"Processed member {member.name}"))
 
         self.stdout.write(
             self.style.SUCCESS(f"Successfully imported members from {json_file}")
@@ -120,7 +120,7 @@ class Command(BaseCommand):
             raise CommandError(f"File {json_file} does not exist.")
 
         for item in data:
-            project, created = ProjectDescription.objects.update_or_create(
+            project, created = Project.objects.update_or_create(
                 name=item["name"],
                 defaults={
                     "description": item["description"],

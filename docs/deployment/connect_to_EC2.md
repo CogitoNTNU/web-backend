@@ -70,6 +70,9 @@ You can now connect to the Ubuntu instance, by writing this:
 ssh -i "/path_to_downloaded_key-pair.pem" ubuntu@ec2-16-171-88-123.eu-north-1.compute.amazonaws.com
 ```
 
+```bash
+ssh -i "drops-cogito.pem" root@ssh.cogito-ntnu.no
+```
 
 ### TMUX
 It is a terminal multiplexer. It allows you to run multiple terminal sessions in a single terminal window. It is very useful when you are working on a remote server via SSH. It allows you to keep a session active even when you disconnect from the server. You can reconnect to the session later and resume your work from where you left off.

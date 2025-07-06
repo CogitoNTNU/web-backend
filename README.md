@@ -62,4 +62,6 @@ To see the endpoint documentation, visit the [OpenAPI/Swagger page](http://127.0
 
 ## 📖 Documentation
 - [Docker](docs/manuals/docker.md)
+- [Database Backup and Restore](docs/manuals/database-backup-and-recovery.md)
 - [Deployment](docs/deployment/connect_to_EC2.md)
+- [Commands](docs/manuals/commands.md)

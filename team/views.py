@@ -11,14 +11,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import Member, MemberApplication, MemberCategory, ProjectDescription
+from .models import Member, MemberApplication, MemberCategory, Project
 from .serializers import (
     MemberCategorySerializer,
     MemberImageUploadSerializer,
     MemberSerializer,
     FindMemberSerializer,
     MemberApplicationSerializer,
-    ProjectDescriptionSerializer,
+    ProjectSerializer,
 )
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -232,8 +232,8 @@ project_success_response = openapi.Response(
 @api_view(["GET"])
 def get_projects_descriptions(request):
     """Returns all projects"""
-    projects = ProjectDescription.objects.all()
-    serializer = ProjectDescriptionSerializer(projects, many=True)
+    projects = Project.objects.all()
+    serializer = ProjectSerializer(projects, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -263,7 +263,7 @@ project_error_response = openapi.Response(
 @permission_classes([IsAuthenticated])
 def add_project_description(request):
     """Add a project"""
-    serializer = ProjectDescriptionSerializer(data=request.data)
+    serializer = ProjectSerializer(data=request.data)
     if serializer.is_valid():
         # Check if the leaders are valid members
         leader_emails = request.data.get("leaders", [])

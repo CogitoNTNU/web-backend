@@ -1,6 +1,6 @@
+from django.core.validators import MinValueValidator
 from django.db import models
-
-# Create your models here.
+from django.utils import timezone
 
 
 class MemberCategory(models.Model):
@@ -68,6 +68,9 @@ class Member(models.Model):
         help_text="The link of the member's LinkedIn profile",
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         ordering = ["order"]
 
@@ -102,13 +105,74 @@ class MemberApplication(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class ProjectDescription(models.Model):
+class Semester(models.TextChoices):
+    SPRING = "SP", "Spring"
+    FALL = "FA", "Fall"
+
+
+class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to="images/")
+    logo = models.ImageField(upload_to="images/")
     # Add leader members using ManyToManyField, referencing 'email' field of Member
-    leaders = models.ManyToManyField(Member)
     hours_a_week = models.IntegerField()
+    github_link = models.URLField(
+        max_length=200,
+        blank=True,
+        default="https://github.com/CogitoNTNU",
+        help_text="The link to the project's GitHub repository",
+    )
+
+    members = models.ManyToManyField(
+        Member,
+        through="ProjectMember",
+        related_name="projects",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return self.name
+
+
+class ProjectMember(models.Model):
+
+    member = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        related_name="project_memberships",
+    )
+
+    project = models.ForeignKey(
+        "Project",
+        on_delete=models.CASCADE,
+        related_name="roles",
+    )
+
+    year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(2000)],
+        default=timezone.now().year,
+    )
+    semester = models.CharField(
+        max_length=2,
+        choices=Semester.choices,
+        default=Semester.FALL,
+    )
+
+    role = models.CharField(max_length=50)
+
+    class Meta:
+        unique_together = (
+            "member",
+            "project",
+            "year",
+            "semester",
+        )
+        ordering = ["-year", "-semester", "project__name"]
+
+    def __str__(self):
+        return (
+            f"{self.member.name} - {self.project.name} "
+            f"({self.get_semester_display()} {self.year})"
+        )
