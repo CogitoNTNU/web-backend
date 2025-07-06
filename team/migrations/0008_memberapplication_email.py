@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('team', '0007_remove_memberapplication_email'),
+        ("team", "0007_remove_memberapplication_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='memberapplication',
-            name='email',
-            field=models.EmailField(blank=True, help_text="Applicant's email address", max_length=254),
+            model_name="memberapplication",
+            name="email",
+            field=models.EmailField(
+                blank=True, help_text="Applicant's email address", max_length=254
+            ),
         ),
     ]

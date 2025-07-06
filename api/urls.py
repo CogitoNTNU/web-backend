@@ -1,12 +1,13 @@
 from django.urls import path
+
+from api.views import health_check
 from team.views import (
-    get_members,
+    MemberCategoryView,
+    UpdateMemberImageView,
     apply,
     get_applications,
-    UpdateMemberImageView,
-    MemberCategoryView,
+    get_members,
 )
-from api.views import health_check
 
 urlpatterns = [
     path("members-by-type/", get_members, name="Members_getter"),

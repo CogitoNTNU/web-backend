@@ -19,7 +19,7 @@ jobs:
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
           echo "LOG_LEVEL=${{ secrets.LOG_LEVEL || 'INFO' }}" >> .env
           echo "DEBUG=True" >> .env
-      
+
       - name: Run Docker Container
         run: |
           # Do database backup before deploying

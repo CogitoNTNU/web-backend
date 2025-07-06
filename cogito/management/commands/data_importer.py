@@ -1,6 +1,8 @@
 import json
+
 from django.core.management.base import BaseCommand, CommandError
-from team.models import MemberCategory, MemberApplication, Project, Member
+
+from team.models import Member, MemberApplication, MemberCategory, Project
 
 
 class Command(BaseCommand):

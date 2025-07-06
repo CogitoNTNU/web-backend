@@ -137,7 +137,6 @@ class Project(models.Model):
 
 
 class ProjectMember(models.Model):
-
     member = models.ForeignKey(
         Member,
         on_delete=models.CASCADE,

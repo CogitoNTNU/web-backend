@@ -4,23 +4,58 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Member',
+            name="Member",
             fields=[
-                ('order', models.IntegerField(blank=True, default=0, primary_key=True, serialize=False, verbose_name='Order')),
-                ('name', models.CharField(blank=True, default='', max_length=30, verbose_name='Name')),
-                ('title', models.CharField(blank=True, default='', max_length=30, verbose_name='Title')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='images/', verbose_name='Image')),
-                ('category', models.CharField(blank=True, default='', max_length=30, verbose_name='Category')),
-                ('email', models.EmailField(blank=True, default='', max_length=50, verbose_name='Email')),
-                ('linkedIn', models.URLField(blank=True, default='', verbose_name='LinkedIn')),
+                (
+                    "order",
+                    models.IntegerField(
+                        blank=True,
+                        default=0,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="Order",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        blank=True, default="", max_length=30, verbose_name="Name"
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True, default="", max_length=30, verbose_name="Title"
+                    ),
+                ),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="images/", verbose_name="Image"
+                    ),
+                ),
+                (
+                    "category",
+                    models.CharField(
+                        blank=True, default="", max_length=30, verbose_name="Category"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True, default="", max_length=50, verbose_name="Email"
+                    ),
+                ),
+                (
+                    "linkedIn",
+                    models.URLField(blank=True, default="", verbose_name="LinkedIn"),
+                ),
             ],
         ),
     ]

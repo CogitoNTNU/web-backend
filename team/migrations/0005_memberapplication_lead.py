@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('team', '0004_memberapplication_projects_to_join'),
+        ("team", "0004_memberapplication_projects_to_join"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='memberapplication',
-            name='lead',
-            field=models.BooleanField(blank=True, default=False, help_text='Whether the applicant wants to be a project lead'),
+            model_name="memberapplication",
+            name="lead",
+            field=models.BooleanField(
+                blank=True,
+                default=False,
+                help_text="Whether the applicant wants to be a project lead",
+            ),
         ),
     ]

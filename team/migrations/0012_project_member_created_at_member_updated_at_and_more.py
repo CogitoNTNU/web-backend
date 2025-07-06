@@ -7,57 +7,110 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('team', '0011_memberapplication_updated_at_and_more'),
+        ("team", "0011_memberapplication_updated_at_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField()),
-                ('logo', models.ImageField(upload_to='images/')),
-                ('hours_a_week', models.IntegerField()),
-                ('github_link', models.URLField(blank=True, default='https://github.com/CogitoNTNU', help_text="The link to the project's GitHub repository")),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField()),
+                ("logo", models.ImageField(upload_to="images/")),
+                ("hours_a_week", models.IntegerField()),
+                (
+                    "github_link",
+                    models.URLField(
+                        blank=True,
+                        default="https://github.com/CogitoNTNU",
+                        help_text="The link to the project's GitHub repository",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
         migrations.AddField(
-            model_name='member',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="member",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='member',
-            name='updated_at',
+            model_name="member",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.CreateModel(
-            name='ProjectMember',
+            name="ProjectMember",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(default=2025, validators=[django.core.validators.MinValueValidator(2000)])),
-                ('semester', models.CharField(choices=[('SP', 'Spring'), ('FA', 'Fall')], default='FA', max_length=2)),
-                ('role', models.CharField(max_length=50)),
-                ('member', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_memberships', to='team.member')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='roles', to='team.project')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "year",
+                    models.PositiveSmallIntegerField(
+                        default=2025,
+                        validators=[django.core.validators.MinValueValidator(2000)],
+                    ),
+                ),
+                (
+                    "semester",
+                    models.CharField(
+                        choices=[("SP", "Spring"), ("FA", "Fall")],
+                        default="FA",
+                        max_length=2,
+                    ),
+                ),
+                ("role", models.CharField(max_length=50)),
+                (
+                    "member",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="project_memberships",
+                        to="team.member",
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="roles",
+                        to="team.project",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-year', '-semester', 'project__name'],
-                'unique_together': {('member', 'project', 'year', 'semester')},
+                "ordering": ["-year", "-semester", "project__name"],
+                "unique_together": {("member", "project", "year", "semester")},
             },
         ),
         migrations.AddField(
-            model_name='project',
-            name='members',
-            field=models.ManyToManyField(related_name='projects', through='team.ProjectMember', to='team.member'),
+            model_name="project",
+            name="members",
+            field=models.ManyToManyField(
+                related_name="projects", through="team.ProjectMember", to="team.member"
+            ),
         ),
         migrations.DeleteModel(
-            name='ProjectDescription',
+            name="ProjectDescription",
         ),
     ]

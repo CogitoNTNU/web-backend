@@ -1,29 +1,25 @@
-from django.shortcuts import render
-
 # Create your views here.
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import send_mail
 from django.http import JsonResponse
-from rest_framework.permissions import AllowAny
-from rest_framework import permissions
-from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import status
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from .models import Member, MemberApplication, MemberCategory, Project
 from .serializers import (
+    FindMemberSerializer,
+    MemberApplicationSerializer,
     MemberCategorySerializer,
     MemberImageUploadSerializer,
     MemberSerializer,
-    FindMemberSerializer,
-    MemberApplicationSerializer,
     ProjectSerializer,
 )
-from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-
 
 # Get member view
 member_success_response = openapi.Response(
