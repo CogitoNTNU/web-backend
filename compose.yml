@@ -1,0 +1,37 @@
+services:
+  cogito:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DEBUG: "${DEBUG}"
+      EMAIL_HOST_USER: "${EMAIL_HOST_USER}"
+      EMAIL_HOST_PASSWORD: "${EMAIL_HOST_PASSWORD}"
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: cogitodb
+      DATABASE_USER: cogitouser
+      DATABASE_PASSWORD: cogitopassword
+    restart: always
+
+  db:
+    image: postgres:13
+    container_name: cogito_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: cogitodb
+      POSTGRES_USER: cogitouser
+      POSTGRES_PASSWORD: cogitopassword
+    restart: always
+
+volumes:
+  postgres_data:
+
