@@ -1,11 +1,10 @@
-from django.http import HttpResponse
-from django.db import DatabaseError
-from django.core.cache import cache
-from rest_framework.decorators import api_view, permission_classes
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.permissions import AllowAny
-
 from django.contrib.auth.models import User
+from django.core.cache import cache
+from django.db import DatabaseError
+from django.http import HttpResponse
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 

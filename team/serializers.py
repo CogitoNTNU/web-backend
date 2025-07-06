@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Member, MemberCategory, MemberApplication, Project, ProjectMember
+
+from .models import Member, MemberApplication, MemberCategory, Project, ProjectMember
 
 
 class ProjectBriefSerializer(serializers.ModelSerializer):

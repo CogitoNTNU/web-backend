@@ -10,12 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from dotenv import load_dotenv
 import os
 from pathlib import Path
 
 from django.core.management.utils import get_random_secret_key
-
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +36,7 @@ ALLOWED_HOSTS = [
     "cogito-backend.net",
     "127.0.0.1",
     "localhost",
-    "0.0.0.0"
+    "0.0.0.0",
 ]
 
 CORS_ALLOWED_ORIGINS = ["https://www.cogito-ntnu.no"]

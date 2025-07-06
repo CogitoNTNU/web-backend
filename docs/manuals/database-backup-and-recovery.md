@@ -23,7 +23,7 @@ The backup process creates a SQL dump of the entire database, which can be used 
     ./scripts/backup-database.sh
     ```
 
-    By default, this will create a local backup.  
+    By default, this will create a local backup.
     To upload the backup to external storage, provide your credentials after the command:
 
     ```bash
@@ -77,10 +77,10 @@ The backup process creates a SQL dump of the entire database, which can be used 
 
 ## Troubleshooting
 
-- **File Not Found:**  
+- **File Not Found:**
   If you see `File not found: ./backups/<your_file>.sql`, ensure the file exists and the name is correct.
 
-- **Database Container Not Running:**  
+- **Database Container Not Running:**
   If you get connection errors, make sure the `cogito_db` container is running:
   ```bash
   docker compose up -d

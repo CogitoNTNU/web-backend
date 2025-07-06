@@ -4,22 +4,60 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image_url', models.CharField(blank=True, default='', help_text=' The image url', max_length=1000)),
-                ('prompt', models.CharField(blank=True, default='', help_text=' The prompt used to generate the image', max_length=1000)),
-                ('date_of_generation', models.DateTimeField(auto_now_add=True, help_text='The date and time the image was generated')),
-                ('height', models.IntegerField(blank=True, default=0, help_text='The height of the image')),
-                ('width', models.IntegerField(blank=True, default=0, help_text='The width of the image')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "image_url",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text=" The image url",
+                        max_length=1000,
+                    ),
+                ),
+                (
+                    "prompt",
+                    models.CharField(
+                        blank=True,
+                        default="",
+                        help_text=" The prompt used to generate the image",
+                        max_length=1000,
+                    ),
+                ),
+                (
+                    "date_of_generation",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="The date and time the image was generated",
+                    ),
+                ),
+                (
+                    "height",
+                    models.IntegerField(
+                        blank=True, default=0, help_text="The height of the image"
+                    ),
+                ),
+                (
+                    "width",
+                    models.IntegerField(
+                        blank=True, default=0, help_text="The width of the image"
+                    ),
+                ),
             ],
         ),
     ]

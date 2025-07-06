@@ -29,10 +29,10 @@ We will be using the AWS EC2 dashboard to generate the key pair. This key is nee
 - Select "Key Pairs" under the "Network & Security" section.
 - Click "Create key pair".
 ![KeyPairs GUI](../images/aws-ec2-key-pairs.png)
-- Name your key pair and download the `.pem` file. 
+- Name your key pair and download the `.pem` file.
 ![create-key-pair GUI](../images/create-key-pair.png)
 The key will automatically download a Private key
-- Save the `.pem` file in the root of your project. 
+- Save the `.pem` file in the root of your project.
 
 ### 2. Extracting the Public Key
 Now to connect key pairs to the EC2 instance, we need to add the Public key

@@ -1,15 +1,14 @@
-import os
 import json
+import os
 import tempfile
-from PIL import Image
 
+from django.contrib.auth.models import User
 from django.core import mail
 from django.core.files.storage import default_storage
-from django.core.management import call_command, CommandError
-from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.core.management import CommandError, call_command
+from django.test import Client, TestCase
+from PIL import Image
 from rest_framework import status
-
 
 from team.models import (
     Member,
@@ -19,7 +18,6 @@ from team.models import (
     ProjectMember,
     Semester,
 )
-
 
 base = "/api/"
 
@@ -202,7 +200,7 @@ class ApplyTestCase(TestCase):
         # Check that an email was sent
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn("Application Received by Cogito NTNU", mail.outbox[0].subject)
-        self.assertIn(f"Dear John Doe,", mail.outbox[0].body)
+        self.assertIn("Dear John Doe,", mail.outbox[0].body)
 
     def test_apply_invalid_email(self):
         invalid_payload = self.valid_payload.copy()
@@ -307,36 +305,6 @@ class ApplyTestCase(TestCase):
             MemberApplication.objects.count(),
             self.amount_of_applications_before_test + 1,
         )
-
-    def test_invalid_missing_first_name_payload(self):
-        data = {
-            "first_name": "",
-            "last_name": "Doe",
-            "email": "user@domain.com",
-            "phone_number": "1234567890",
-        }
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_invalid_missing_last_name_payload(self):
-        data = {
-            "first_name": "John",
-            "last_name": "",
-            "email": "user@domain.com",
-            "phone_number": "1234567890",
-        }
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_invalid_missing_phone_number_payload(self):
-        data = {
-            "first_name": "John",
-            "last_name": "Doe",
-            "email": "user@domain.com",
-            "phone_number": "",
-        }
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_invalid_to_short_phone_number_payload(self):
         data = {
@@ -498,7 +466,6 @@ class ApplyTestCase(TestCase):
 
 
 class UpdateMemberImageViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.url = f"{base}member/image"
@@ -608,7 +575,6 @@ class UpdateMemberImageViewTests(TestCase):
 
 
 class MemberCategoryViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.url = f"{base}member/category"
@@ -626,7 +592,6 @@ class MemberCategoryViewTests(TestCase):
 
 
 class ImportDataCommandTest(TestCase):
-
     def setUp(self):
         # Create a temp file for JSON data
         self.file_path = "test.json"

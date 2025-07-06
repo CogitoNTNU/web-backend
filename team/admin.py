@@ -1,9 +1,10 @@
 from django.contrib import admin
+
 from .models import (
     Member,
     MemberApplication,
-    Project,
     MemberCategory,
+    Project,
 )
 
 

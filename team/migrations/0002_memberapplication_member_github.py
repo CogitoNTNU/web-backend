@@ -4,26 +4,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('team', '0001_initial'),
+        ("team", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MemberApplication',
+            name="MemberApplication",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('first_name', models.CharField(max_length=100)),
-                ('last_name', models.CharField(max_length=100)),
-                ('email', models.EmailField(max_length=254)),
-                ('phone_number', models.CharField(max_length=15)),
-                ('date_of_application', models.DateTimeField(auto_now=True, help_text='The day the application was sent')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=100)),
+                ("last_name", models.CharField(max_length=100)),
+                ("email", models.EmailField(max_length=254)),
+                ("phone_number", models.CharField(max_length=15)),
+                (
+                    "date_of_application",
+                    models.DateTimeField(
+                        auto_now=True, help_text="The day the application was sent"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='member',
-            name='github',
-            field=models.URLField(blank=True, default='', verbose_name='GitHub'),
+            model_name="member",
+            name="github",
+            field=models.URLField(blank=True, default="", verbose_name="GitHub"),
         ),
     ]
