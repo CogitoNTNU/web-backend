@@ -4,6 +4,7 @@ from .models import (
     MemberApplication,
     Project,
     MemberCategory,
+    ProjectMember,
 )
 
 
@@ -30,3 +31,4 @@ admin.site.register(Member)
 admin.site.register(MemberApplication, MemberApplicationAdmin)
 admin.site.register(MemberCategory)
 admin.site.register(Project)
+admin.site.register(ProjectMember)
