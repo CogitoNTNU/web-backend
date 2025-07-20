@@ -1,5 +1,6 @@
 from django.urls import path
 from team.views import (
+    ProjectsView,
     get_members,
     apply,
     get_applications,
@@ -15,4 +16,5 @@ urlpatterns = [
     path("health-check/", health_check, name="Health_check"),
     path("member/image", UpdateMemberImageView.as_view(), name="Update_member_image"),
     path("member/category", MemberCategoryView.as_view(), name="Member_category"),
+    path("projects/", ProjectsView.as_view(), name="Project_list"),
 ]
