@@ -131,14 +131,6 @@ class ProjectsView(ListAPIView):
     serializer_class = ProjectSerializer
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(
-        operation_description="Get all projects",
-        tags=["Project Management"],
-        responses={200: openapi.Response(description="List of projects")},
-    )
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
 
 # Apply
 application_success_response = openapi.Response(
