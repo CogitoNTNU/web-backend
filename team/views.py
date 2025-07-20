@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser
@@ -123,6 +124,20 @@ class UpdateMemberImageView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectsView(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Get all projects",
+        tags=["Project Management"],
+        responses={200: openapi.Response(description="List of projects")},
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 # Apply
