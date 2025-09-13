@@ -37,7 +37,8 @@ ALLOWED_HOSTS = [
     "cogito-backend.net",
     "127.0.0.1",
     "localhost",
-    "0.0.0.0"
+    "backend",
+    "0.0.0.0",
 ]
 
 CORS_ALLOWED_ORIGINS = ["https://www.cogito-ntnu.no"]
@@ -120,7 +121,7 @@ else:
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": os.getenv("DATABASE_NAME", "cogitodb"),
         "USER": os.getenv("DATABASE_USER", "cogitouser"),
         "PASSWORD": os.getenv("DATABASE_PASSWORD", "cogitopassword"),
