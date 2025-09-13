@@ -1,6 +1,7 @@
 # Do not commit secrets or credentials to git
 *.pem
 *.env
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
