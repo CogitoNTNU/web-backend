@@ -19,7 +19,6 @@ services:
       DATABASE_NAME: cogitodb
       DATABASE_USER: cogitouser
       DATABASE_PASSWORD: cogitopassword
-    restart: always
     networks:
       - proxy
     labels:
@@ -45,7 +44,6 @@ services:
       POSTGRES_DB: cogitodb
       POSTGRES_USER: cogitouser
       POSTGRES_PASSWORD: cogitopassword
-    restart: always
     networks:
       - proxy
 
