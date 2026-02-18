@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.parsers import MultiPartParser
@@ -125,6 +126,12 @@ class UpdateMemberImageView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ProjectsView(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = [AllowAny]
+
+
 # Apply
 application_success_response = openapi.Response(
     description="Sends an application for membership to Cogito",
@@ -173,68 +180,10 @@ def apply(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Get applications
-application_success_response = openapi.Response(
-    description="Get all applications",
-    examples={
-        "application/json": [
-            {
-                "first_name": "FIRST_NAME_OF_APPLICANT",
-                "last_name": "SECOND_NAME_OF_APPLICANT",
-                "email": "user@example.com",
-                "about": "My name is FIRST_NAME and my last name is SECOND_NAME",
-                "phone_number": "12345678",
-            }
-        ]
-    },
-)
-
-
-@swagger_auto_schema(
-    method="GET",
-    operation_description="Get all applications",
-    tags=["Member Management"],
-    response_description="Returns all applications",
-)
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_applications(request):
-    """Returns all applications"""
-    applications = MemberApplication.objects.all()
-    serializer = MemberApplicationSerializer(applications, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# Get Projects
-project_success_response = openapi.Response(
-    description="Get all projects",
-    examples={
-        "application/json": [
-            {
-                "name": "Project Name",
-                "description": "Project Description",
-                "image": "Image",
-                "github": "GitHub",
-                "website": "Website",
-            }
-        ]
-    },
-)
-
-
-@swagger_auto_schema(
-    method="GET",
-    operation_description="Get all projects",
-    tags=["Project Management"],
-    response_description="Returns all projects",
-    response={200: project_success_response},
-)
-@api_view(["GET"])
-def get_projects_descriptions(request):
-    """Returns all projects"""
-    projects = Project.objects.all()
-    serializer = ProjectSerializer(projects, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+class ApplicationsView(ListAPIView):
+    queryset = MemberApplication.objects.all()
+    serializer_class = MemberApplicationSerializer
+    permission_classes = [IsAuthenticated]
 
 
 # Add Project

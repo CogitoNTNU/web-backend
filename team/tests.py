@@ -8,7 +8,9 @@ from django.core.files.storage import default_storage
 from django.core.management import call_command, CommandError
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
+from django.urls import reverse
 from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
 
 
 from team.models import (
@@ -498,7 +500,6 @@ class ApplyTestCase(TestCase):
 
 
 class UpdateMemberImageViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.url = f"{base}member/image"
@@ -608,7 +609,6 @@ class UpdateMemberImageViewTests(TestCase):
 
 
 class MemberCategoryViewTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.url = f"{base}member/category"
@@ -626,7 +626,6 @@ class MemberCategoryViewTests(TestCase):
 
 
 class ImportDataCommandTest(TestCase):
-
     def setUp(self):
         # Create a temp file for JSON data
         self.file_path = "test.json"
@@ -710,3 +709,24 @@ class SQLInjectionTestCase(TestCase):
         self.assertEqual(application.about, sql_injection_payload)
         # Verifying that the database integrity is maintained
         self.assertTrue(MemberApplication.objects.exists())
+
+
+class ProjectsViewTests(APITestCase):
+    def setUp(self):
+        self.client = APIClient()
+        # Create a sample project
+        Project.objects.create(
+            name="Test Project",
+            description="A test project",
+            logo="test.jpg",
+            github_link="https://github.com/example/test",
+            hours_a_week=10,
+        )
+
+    def test_projects_view_returns_projects(self):
+        url = reverse("Project_list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(isinstance(response.data, list))
+        self.assertGreaterEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], "Test Project")
