@@ -25,6 +25,7 @@ from django.urls import path, re_path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
+from django_prometheus import urls as prometheus_urls  # Import
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -37,6 +38,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path("", include(prometheus_urls)),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls"), name="api"),
     # Swagger URLs

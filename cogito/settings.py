@@ -37,7 +37,8 @@ ALLOWED_HOSTS = [
     "cogito-backend.net",
     "127.0.0.1",
     "localhost",
-    "0.0.0.0"
+    "backend",
+    "0.0.0.0",
 ]
 
 CORS_ALLOWED_ORIGINS = ["https://www.cogito-ntnu.no"]
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework",
     "corsheaders",
+    "django_prometheus",
     # Applications
     "team",
     "api",
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -76,6 +79,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "cogito.urls"
@@ -117,7 +121,7 @@ else:
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": os.getenv("DATABASE_NAME", "cogitodb"),
         "USER": os.getenv("DATABASE_USER", "cogitouser"),
         "PASSWORD": os.getenv("DATABASE_PASSWORD", "cogitopassword"),
